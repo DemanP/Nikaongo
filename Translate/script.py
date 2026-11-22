@@ -20,14 +20,13 @@ while script_mode:
     split_text = text.split(" ")
     flags = list(filter(lambda word: word.startswith('-'), split_text))
     for flag in flags:  # for each found flag, trigger the relative toggle, and remove the flag
-        split_text.remove(flag)
         if flag == quit_flag:
             script_mode = 0
-            break
-        if flag == debug_flag:
+            break  # no need to proceed with other flags (for now)
+        elif flag == debug_flag:
             print(f"-- Debug On --")
             debug = True
-            continue
+        split_text.remove(flag)
 
     if script_mode == 1:
         text = "".join(split_text)
