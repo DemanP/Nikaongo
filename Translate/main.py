@@ -6,8 +6,13 @@ os.chdir(os.path.dirname(os.path.abspath(__file__)))
 quit_flag: str = "-q"
 debug_flag: str = "-d"
 debug: bool = False
-stop: bool = False
-while True:
+
+script_mode: int = 1
+# script modes:
+# 0 - exit script mode
+# 1 - translate English to Nikaongo
+# 2 - translate Nikaongo to English
+while script_mode:
     # flags resets
     debug = False
     
@@ -17,16 +22,14 @@ while True:
     for flag in flags:  # for each found flag, trigger the relative toggle, and remove the flag
         split_text.remove(flag)
         if flag == quit_flag:
-            stop = True
+            script_mode = 0
             break
         if flag == debug_flag:
             print(f"-- Debug On --")
             debug = True
             continue
-    
-    if stop:  # stops cycle instead of (going through translate phase, then stopping)
-        break
-    text = "".join(split_text)
 
-    result = ntr.translate(text, debug)
-    print(result)
+    if script_mode == 1:
+        text = "".join(split_text)
+        result = ntr.translate(text, debug)
+        print(result)
