@@ -1,9 +1,12 @@
 import os
 import translate as ntr
+import text_colors as CS
 
 # SUGGESTION: rename main.py to script.py
 
+os.system("")  # for magic
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
+
 
 # Flags:
 quit_flag: str = "-q"
@@ -25,7 +28,7 @@ while script_mode:
     text = input(">>> ")
     if not text:
         script_mode = 0
-        print("Fast Quit")
+        print(f"{CS.cDebug}Fast Quit{CS.cr}")
 
     split_text = text.split(" ")
     flags = list(filter(lambda word: word.startswith('-'), split_text))
@@ -35,14 +38,14 @@ while script_mode:
     for flag in flags:  # for each found flag, trigger the relative toggle, and remove the flag
         if flag == quit_flag:
             script_mode = 0
-            print(f"-- script set to Quit mode --")
+            print(f"{CS.cDebug}-- script set to Quit mode --{CS.cr}")
             break  # no need to proceed with other flags (for now)
         elif flag == debug_flag:
-            print(f"-- Debug Toggled --")
+            print(f"{CS.cDebug}-- Debug Toggled --{CS.cr}")
             debug = not debug
         elif flag == debug_persistent_flag:
-            print(f"-- Debug persistent toggle set to {not debug_persistent} --")
             debug_persistent = not debug_persistent
+            print(f"{CS.cDebug}-- Debug persistent toggle set to {CS.c174 if debug_persistent else CS.c741}{debug_persistent}{CS.cDebug} --{CS.cr}")
             debug = debug_persistent
         elif flag == skip_flag:
             skips.append(split_text.index(flag))
@@ -56,6 +59,7 @@ while script_mode:
         result = ""
         texts = " ".join(split_text).split("__SKIP__")
         for text in texts:
+            print(CS.cDebug, end='')
             result_part = ntr.translate(text, debug)
             result += result_part + word_skipped.pop(0)
-        print(result)
+        print(CS.cr, result)
