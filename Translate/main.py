@@ -61,5 +61,6 @@ while script_mode:
         for text in texts:
             print(CS.cDebug, end='')
             result_part = ntr.translate(text, debug)
-            result += result_part + word_skipped.pop(0)
+            result_str = result_part[0]
+            result += result_str + word_skipped.pop(0)
         print(CS.cr, result)
