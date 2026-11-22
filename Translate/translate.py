@@ -1,5 +1,5 @@
 import json, os
-import eng_to_ipa as ipa
+#import eng_to_ipa as ipa
 
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
@@ -26,7 +26,7 @@ class Token:
     text: str = ""
     is_word: bool = False
     type: str = ""
-    def __init__(self, text, is_word = False, token_type = None):
+    def __init__(self, text, is_word = False, token_type = ''):
         self.text = text
         self.is_word = is_word
         self.type = token_type
@@ -38,12 +38,12 @@ class Token:
         self.text += other
         return self
 
-    def get_text(self: Token) -> str:
+    def get_text(self) -> str:
         return self.text
-    def get_type(self: Token) -> str:
+    def get_type(self) -> str:
         return self.type
 
-def get_tokens(text: str) -> list[str]:
+def get_tokens(text: str) -> list[Token]:
     if not len(text):
         return []
     tokens: list[Token] = []
@@ -211,5 +211,5 @@ def transliterate(text: str) -> str:
         symbol_index += 1
     return result
 
-def ipa_convert(text: str) -> str:
-    return ipa.convert(text)
+#def ipa_convert(text: str) -> str:
+#    return ipa.convert(text)
