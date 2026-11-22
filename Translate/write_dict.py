@@ -41,6 +41,6 @@ for line in text.splitlines():
     for en_word in en_words.split('/'):
         add_word(en_word, ni_word)
 
-en_ni_py_file = open("en_ni.json", 'w')
-en_ni_py_file.write(json.dumps(en_ni, indent=4))
-en_ni_py_file.close()
+en_ni_file = open("en_ni.json", 'w')
+en_ni_file.write(json.dumps(en_ni, indent=4))
+en_ni_file.close()

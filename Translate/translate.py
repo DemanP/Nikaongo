@@ -16,7 +16,9 @@ en_ni_unique_symbols: dict = {
     "oo": "u",
     "w": "v",
     "th": "z",
-    "h": "x"
+    "h": "x",
+    "ph": "f",
+    "x": "ks",
 }
 en_ni_file.close()
 
@@ -59,11 +61,16 @@ def get_tokens(text: str) -> list[str]:
     return tokens
 
 def is_word_translatable(word: str) -> bool:
+    word = word.lower()
     is_plural: bool = word.endswith("s")
     return word in en_ni or (is_plural and word[:-1] in en_ni)
 def translate_word(word: str) -> str:
-    is_plural: bool = word.endswith("s")
+    is_upper: bool = word.isupper() and len(word) > 1
+    is_capitalized: bool = word[0].isupper()
 
+    word = word.lower()
+    is_plural: bool = word.endswith("s")
+    
     translated_word: str = ""
     if word in en_ni:
         translated_word = en_ni[word][0]
@@ -71,60 +78,51 @@ def translate_word(word: str) -> str:
         translated_word = "ty " + en_ni[word[:-1]][0]
     else:
         translated_word = transliterate(word)
+
+    if is_upper:
+        translated_word = translated_word.upper()
+    elif is_capitalized:
+        translated_word = translated_word.capitalize()
     
     return translated_word
 def translate_token_buffer(token_buffer: list[Token], debug: bool = False) -> str:
     if not len(token_buffer):
         return ""
     
-    result: str = ""
-
     # Starts at the length of the token buffer and goes down.
     # This way larger words such as "bullet train" will be translated first,
-    # before reaching word "bullet" by itself and tranlating it seperately.
+    # before reaching word "bullet" by itself and translating it seperately.
     max_buffer_index = len(token_buffer)
 
     if debug_mode or debug:
         print(token_buffer, end="")
         print(f" - len({max_buffer_index})")
     
+    buffer_text: str = ""
     while max_buffer_index > 0:
         # get the current buffer text
-        buffer_text: str = ""
+        buffer_text = ""
         for add_index in range(max_buffer_index):
-            buffer_text += token_buffer[add_index].text.lower()
+            buffer_text += token_buffer[add_index].text
         
         if is_word_translatable(buffer_text):
-            # translate the given word(-s)
-            result += translate_word(buffer_text)
-            # translate the remaining tokens
-            result += translate_token_buffer(token_buffer[max_buffer_index:], debug)
-            return result
+            break
         max_buffer_index -= 1
 
-    result = transliterate(token_buffer[0].text.lower())
-    if len(token_buffer) > 1:
-        result += translate_token_buffer(token_buffer[1:], debug)
+    # translate the given word(-s)
+    if max_buffer_index == 0:
+        buffer_text = token_buffer[0].text
+        max_buffer_index += 1
+    result: str = translate_word(buffer_text)
+    # translate the remaining tokens
+    result += translate_token_buffer(token_buffer[max_buffer_index:], debug)
+
     return result
 def translate(text: str, debug: bool = False) -> str:
-    tokens: list[Token] = get_tokens(text)
-
-    token_buffer: list[Token] = []
-
-    result: str = ""
-    token_index: int = 0
-    while token_index < len(tokens):
-        token: Token = tokens[token_index]
-        if token.is_word or token.text.isspace():
-            token_buffer.append(token)
-        else:
-            result += translate_token_buffer(token_buffer, debug)
-            token_buffer.clear()
-            result += token.text
-        token_index += 1
-    
-    result += translate_token_buffer(token_buffer, debug)
-    return result
+    token_buffer: list[Token] = get_tokens(text)
+    if debug_mode or debug:
+        print(f"Starting tokens: {token_buffer}")
+    return translate_token_buffer(token_buffer, debug)
 
 def transliterate(text: str) -> str:
     result: str = ""
@@ -137,7 +135,7 @@ def transliterate(text: str) -> str:
         if symbol_index + 1 < text_length:
             next_symbol = text[symbol_index + 1]
             symbols_combo += next_symbol
-        double_letter: bool = symbol == next_symbol
+        double_letter: bool = symbol == next_symbol and symbol.isalpha()
         
         if symbol in en_ni_unique_symbols:
             result += en_ni_unique_symbols[symbol]

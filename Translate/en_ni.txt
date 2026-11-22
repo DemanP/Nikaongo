@@ -81,7 +81,7 @@ Evening	Set
 Week	Qon
 Month-season	Sizn
 Year	Jer
-Food chain 	Kabak
+Food chain	Kabak
 Science	Kagaku
 #kill -self	kajs
 Area	Area
