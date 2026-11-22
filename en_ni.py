@@ -1,0 +1,292 @@
+en_ni: dict = {
+    "my": [
+        "vatawi des"
+    ],
+    "his": [
+        "xi des"
+    ],
+    "her": [
+        "wi des"
+    ],
+    "its": [
+        "kivi des"
+    ],
+    "our": [
+        "moy des"
+    ],
+    "their": [
+        "grup des"
+    ],
+    "i'm": [
+        "vatawi is"
+    ],
+    "train": [
+        "transport"
+    ],
+    "bullet train": [
+        "kontran"
+    ],
+    "metro": [
+        "kejvtran"
+    ],
+    "tram": [
+        "klastran"
+    ],
+    "ship": [
+        "ownbout"
+    ],
+    "radio": [
+        "komunikator"
+    ],
+    "rail": [
+        "tranvej"
+    ],
+    "city": [
+        "klaster"
+    ],
+    "fight": [
+        "tataky"
+    ],
+    "bridge": [
+        "riverpas"
+    ],
+    "cat": [
+        "neko"
+    ],
+    "shower": [
+        "rejn"
+    ],
+    "sun": [
+        "dejlyt"
+    ],
+    "star": [
+        "nytlyt"
+    ],
+    "photo": [
+        "lytrekord"
+    ],
+    "theatre": [
+        "sinstori"
+    ],
+    "armour": [
+        "protekt"
+    ],
+    "safety goggles": [
+        "ajzgud"
+    ],
+    "glasses": [
+        "lenz"
+    ],
+    "mirror": [
+        "selfsi",
+        "reflekt"
+    ],
+    "black": [
+        "negro"
+    ],
+    "pet": [
+        "kompanjon"
+    ],
+    "i": [
+        "vatawi"
+    ],
+    "you": [
+        "ju",
+        "qu"
+    ],
+    "he": [
+        "xi"
+    ],
+    "she": [
+        "wi"
+    ],
+    "it": [
+        "kivi"
+    ],
+    "we": [
+        "moy"
+    ],
+    "they": [
+        "grup"
+    ],
+    "project": [
+        "fokusvork"
+    ],
+    "cake": [
+        "bejkvork"
+    ],
+    "baked sweets": [
+        "bejkvork"
+    ],
+    "electrical wire": [
+        "paverlyn"
+    ],
+    "drown": [
+        "aogate"
+    ],
+    "friend": [
+        "kamrad"
+    ],
+    "foolish": [
+        "ba'ka"
+    ],
+    "suck": [
+        "soy "
+    ],
+    "conzumut": [
+        "conzumut"
+    ],
+    "have fun": [
+        "jip'i'"
+    ],
+    "shotgun": [
+        "vajpaut"
+    ],
+    "bullet": [
+        "carq"
+    ],
+    "lightbulb": [
+        "lytorb"
+    ],
+    "masturbate": [
+        "kindrac"
+    ],
+    "and": [
+        "to"
+    ],
+    "soon": [
+        "pronto"
+    ],
+    "slut": [
+        "wlondra"
+    ],
+    "turret": [
+        "fortaver"
+    ],
+    "volcano": [
+        "erapto"
+    ],
+    "diety": [
+        "kami"
+    ],
+    "god": [
+        "kami"
+    ],
+    "sword": [
+        "katana"
+    ],
+    "continent": [
+        "kontinud"
+    ],
+    "warm": [
+        "at'aky"
+    ],
+    "fridge": [
+        "fudkip"
+    ],
+    "light switch": [
+        "lyton"
+    ],
+    "drums": [
+        "bits"
+    ],
+    "n&r moons": [
+        "noa to ren"
+    ],
+    "nikao": [
+        "nikao"
+    ],
+    "nikaongo": [
+        "nikaongo"
+    ],
+    "is": [
+        "is"
+    ],
+    "am": [
+        "is"
+    ],
+    "are": [
+        "and"
+    ],
+    "laidak": [
+        "lajdak"
+    ],
+    "zero": [
+        "nul"
+    ],
+    "two": [
+        "ni"
+    ],
+    "face": [
+        "kao"
+    ],
+    "thank you": [
+        "danke"
+    ],
+    "fast": [
+        "wnele"
+    ],
+    "gay": [
+        "homo"
+    ],
+    "parentia": [
+        "parentia"
+    ],
+    "religion": [
+        "kult"
+    ],
+    "death": [
+        "wi"
+    ],
+    "suicide": [
+        "wiva"
+    ],
+    "pervert": [
+        "xentai"
+    ],
+    "sauna": [
+        "hotrum"
+    ],
+    "street": [
+        "klastervej"
+    ],
+    "earring": [
+        "irver"
+    ],
+    "day cycle": [
+        "sykl"
+    ],
+    "morning": [
+        "ryz"
+    ],
+    "evening": [
+        "set"
+    ],
+    "week": [
+        "qon"
+    ],
+    "month-season": [
+        "sizn"
+    ],
+    "year": [
+        "jer"
+    ],
+    "food chain ": [
+        "kabak"
+    ],
+    "science": [
+        "kagaku"
+    ],
+    "area": [
+        "area"
+    ],
+    "verb": [
+        "aktvord"
+    ],
+    "noun": [
+        "nejmvord"
+    ],
+    "clock": [
+        "tymtel"
+    ]
+}

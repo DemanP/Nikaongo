@@ -1,0 +1,90 @@
+Train	Transport
+Bullet train	Kontran
+Metro	Kejvtran
+Tram	Klastran
+Ship	Ownbout
+Radio	Komunikator
+Rail	Tranvej
+City	Klaster
+Fight	Tataky
+Bridge	Riverpas
+Cat	Neko
+Shower	Rejn
+Sun	Dejlyt
+Star	Nytlyt
+Photo	Lytrekord
+Theatre	Sinstori
+Armour	Protekt
+Safety goggles	Ajzgud
+Glasses	Lenz
+Mirror	Selfsi
+Mirror	Reflekt
+Black	Negro
+Pet	Kompanjon
+I	Vatawi
+You	Ju
+You	Qu
+He	Xi
+She	Wi
+It	Kivi
+We	Moy
+They	Grup
+Project	Fokusvork
+Cake/Baked sweets	Bejkvork
+Electrical wire	Paverlyn
+Drown	Aogate
+Friend	Kamrad
+Foolish	Ba'ka
+Suck	Soy 
+Conzumut	Conzumut
+Have fun	Jip'i'
+Shotgun	Vajpaut
+Bullet	Carq
+Lightbulb	Lytorb
+Masturbate	Kindrac
+And	To
+Soon	Pronto
+Slut	Wlondra
+Turret	Fortaver
+Volcano	Erapto
+Diety/God	Kami
+Sword	Katana
+Continent	Kontinud
+Warm	At'aky
+Fridge	Fudkip
+Light switch	Lyton
+Drums	Bits
+N&R Moons	Noa to Ren
+Nikao	Nikao
+Nikaongo	Nikaongo
+Is	Is
+Am	Is
+Are	And
+Laidak	Lajdak
+Zero	Nul
+Two	Ni
+Face	Kao
+Thank you	Danke
+Fast	Wnele
+Gay	Homo
+Parentia	Parentia
+Religion	Kult
+Death	Wi
+Suicide	Wiva
+Pervert	Xentai
+Sauna	Hotrum
+Street	Klastervej
+Earring	Irver
+Day cycle	Sykl
+Morning	Ryz
+Evening	Set
+Week	Qon
+Month-season	Sizn
+Year	Jer
+Food chain 	Kabak
+Science	Kagaku
+#kill -self	kajs
+Area	Area
+Verb	Aktvord
+Noun	Nejmvord
+Clock	tymtel
