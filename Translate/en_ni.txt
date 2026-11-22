@@ -1,90 +1,96 @@
-Train	Transport
-Bullet train	Kontran
-Metro	Kejvtran
-Tram	Klastran
-Ship	Ownbout
-Radio	Komunikator
-Rail	Tranvej
-City	Klaster
-Fight	Tataky
-Bridge	Riverpas
-Cat	Neko
-Shower	Rejn
-Sun	Dejlyt
-Star	Nytlyt
-Photo	Lytrekord
-Theatre	Sinstori
-Armour	Protekt
-Safety goggles	Ajzgud
-Glasses	Lenz
-Mirror	Selfsi
-Mirror	Reflekt
-Black	Negro
-Pet	Kompanjon
-I	Vatawi
-You	Ju
-You	Qu
-He	Xi
-She	Wi
-It	Kivi
-We	Moy
-They	Grup
-Project	Fokusvork
-Cake/Baked sweets	Bejkvork
-Electrical wire	Paverlyn
-Drown	Aogate
-Friend	Kamrad
-Foolish	Ba'ka
-Suck	Soy 
-Conzumut	Conzumut
-Have fun	Jip'i'
-Shotgun	Vajpaut
-Bullet	Carq
-Lightbulb	Lytorb
-Masturbate	Kindrac
-And	To
-Soon	Pronto
-Slut	Wlondra
-Turret	Fortaver
-Volcano	Erapto
-Diety/God	Kami
-Sword	Katana
-Continent	Kontinud
-Warm	At'aky
-Fridge	Fudkip
-Light switch	Lyton
-Drums	Bits
-N&R Moons	Noa to Ren
-Nikao	Nikao
-Nikaongo	Nikaongo
-Is	Is
-Am	Is
-Are	And
-Laidak	Lajdak
-Zero	Nul
-Two	Ni
-Face	Kao
-Thank you	Danke
-Fast	Wnele
-Gay	Homo
-Parentia	Parentia
-Religion	Kult
-Death	Wi
-Suicide	Wiva
-Pervert	Xentai
-Sauna	Hotrum
-Street	Klastervej
-Earring	Irver
-Day cycle	Sykl
-Morning	Ryz
-Evening	Set
-Week	Qon
-Month-season	Sizn
-Year	Jer
-Food chain	Kabak
-Science	Kagaku
-#kill -self	kajs
-Area	Area
-Verb	Aktvord
-Noun	Nejmvord
-Clock	tymtel
+# Add words using this format:
+# <type>	<En word>	<Ni word>
+# words are separeted by TABS!
+noun	Train	Transport
+noun	Bullet train	Kontran
+noun	Metro	Kejvtran
+noun	Tram	Klastran
+noun	Ship	Ownbout
+noun	Radio	Komunikator
+noun	Rail	Tranvej
+noun	City	Klaster
+verb	Fight	Tataky
+noun	Bridge	Riverpas
+noun	Cat	Neko
+noun	Shower	Rejn
+noun	Sun	Dejlyt
+noun	Star	Nytlyt
+noun	Photo	Lytrekord
+noun	Theatre	Sinstori
+noun	Armour	Protekt
+noun	Safety goggles	Ajzgud
+noun	Glasses	Lenz
+noun	Mirror	Selfsi
+noun	Mirror	Reflekt
+adj.	Black	Negro
+noun	Pet	Kompanjon
+pron.	I	Vatawi
+pron.	You	Ju
+pron.	You	Qu
+pron.	He	Xi
+pron.	She	Wi
+pron.	It	Kivi
+pron.	We	Moy
+pron.	They	Grup
+noun	Project	Fokusvork
+noun	Cake/Baked sweets	Bejkvork
+noun	Electrical wire	Paverlyn
+verb	Drown	Aogate
+noun	Friend	Kamrad
+adj.	Foolish	Ba'ka
+verb	Suck	Soy
+verb	Conzumut	Konzumut
+verb	Have fun	Jip'i'
+noun	Shotgun	Vajpaut
+noun	Bullet	Carq
+noun	Lightbulb	Lytorb
+verb	Masturbate	Kindrac
+conj	And	To
+noun	Soon	Pronto
+noun	Slut	Wlondra
+noun	Turret	Fortaver
+noun	Volcano	Erapto
+noun	Diety/God	Kami
+noun	Sword	Katana
+noun	Continent	Kontinud
+adj.	Warm	At'aky
+noun	Fridge	Fudkip
+noun	Light switch	Lyton
+noun	Drums	Bits
+noun	N&R Moons	Noa to Ren
+noun	Nikao	Nikao
+noun	Nikaongo	Nikaongo
+verb	Is	Is
+verb	Am	Is
+verb	Are	And
+noun	Laidak	Lajdak
+noun	Zero	Nul
+noun	Two	Ni
+noun	Face	Kao
+noun	Thank you	Danke
+adj.	Fast	Wnele
+adj.	Gay	Homo
+noun	Parentia	Parentia
+noun	Religion	Kult
+noun	Death	Wi
+noun	Suicide	Wiva
+adj.	Pervert	Xentai
+noun	Sauna	Hotrum
+noun	Street	Klastervej
+noun	Earring	Irver
+noun	Day cycle	Sykl
+noun	Morning	Ryz
+noun	Evening	Set
+noun	Week	Qon
+noun	Month-season	Sizn
+noun	Year	Jer
+noun	Food chain	Kabak
+noun	Science	Kagaku
+#verb	kill -self	kajs
+noun	Area	Area
+noun	Body	Bodi
+noun	Verb	Aktvord
+noun	Noun	Nejmvord
+noun	Shop	Byhaus
+noun	Path	Vej
+noun	Clock	tymtel

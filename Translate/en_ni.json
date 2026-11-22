@@ -1,304 +1,622 @@
 {
-    "my": [
-        "vatawi des"
-    ],
-    "mine": [
-        "vatawi des"
-    ],
-    "your": [
-        "ju des"
-    ],
-    "yours": [
-        "ju des"
-    ],
-    "his": [
-        "xi des"
-    ],
-    "her": [
-        "wi des"
-    ],
-    "its": [
-        "kivi des"
-    ],
-    "our": [
-        "moy des"
-    ],
-    "ours": [
-        "moy des"
-    ],
-    "their": [
-        "grup des"
-    ],
-    "i'm": [
-        "vatawi is"
-    ],
-    "train": [
-        "transport"
-    ],
-    "bullet train": [
-        "kontran"
-    ],
-    "metro": [
-        "kejvtran"
-    ],
-    "tram": [
-        "klastran"
-    ],
-    "ship": [
-        "ownbout"
-    ],
-    "radio": [
-        "komunikator"
-    ],
-    "rail": [
-        "tranvej"
-    ],
-    "city": [
-        "klaster"
-    ],
-    "fight": [
-        "tataky"
-    ],
-    "bridge": [
-        "riverpas"
-    ],
-    "cat": [
-        "neko"
-    ],
-    "shower": [
-        "rejn"
-    ],
-    "sun": [
-        "dejlyt"
-    ],
-    "star": [
-        "nytlyt"
-    ],
-    "photo": [
-        "lytrekord"
-    ],
-    "theatre": [
-        "sinstori"
-    ],
-    "armour": [
-        "protekt"
-    ],
-    "safety goggles": [
-        "ajzgud"
-    ],
-    "glasses": [
-        "lenz"
-    ],
-    "mirror": [
-        "selfsi",
-        "reflekt"
-    ],
-    "black": [
-        "negro"
-    ],
-    "pet": [
-        "kompanjon"
-    ],
-    "i": [
-        "vatawi"
-    ],
-    "you": [
-        "ju",
-        "qu"
-    ],
-    "he": [
-        "xi"
-    ],
-    "she": [
-        "wi"
-    ],
-    "it": [
-        "kivi"
-    ],
-    "we": [
-        "moy"
-    ],
-    "they": [
-        "grup"
-    ],
-    "project": [
-        "fokusvork"
-    ],
-    "cake": [
-        "bejkvork"
-    ],
-    "baked sweets": [
-        "bejkvork"
-    ],
-    "electrical wire": [
-        "paverlyn"
-    ],
-    "drown": [
-        "aogate"
-    ],
-    "friend": [
-        "kamrad"
-    ],
-    "foolish": [
-        "ba'ka"
-    ],
-    "suck": [
-        "soy"
-    ],
-    "conzumut": [
-        "conzumut"
-    ],
-    "have fun": [
-        "jip'i'"
-    ],
-    "shotgun": [
-        "vajpaut"
-    ],
-    "bullet": [
-        "carq"
-    ],
-    "lightbulb": [
-        "lytorb"
-    ],
-    "masturbate": [
-        "kindrac"
-    ],
-    "and": [
-        "to"
-    ],
-    "soon": [
-        "pronto"
-    ],
-    "slut": [
-        "wlondra"
-    ],
-    "turret": [
-        "fortaver"
-    ],
-    "volcano": [
-        "erapto"
-    ],
-    "diety": [
-        "kami"
-    ],
-    "god": [
-        "kami"
-    ],
-    "sword": [
-        "katana"
-    ],
-    "continent": [
-        "kontinud"
-    ],
-    "warm": [
-        "at'aky"
-    ],
-    "fridge": [
-        "fudkip"
-    ],
-    "light switch": [
-        "lyton"
-    ],
-    "drums": [
-        "bits"
-    ],
-    "n&r moons": [
-        "noa to ren"
-    ],
-    "nikao": [
-        "nikao"
-    ],
-    "nikaongo": [
-        "nikaongo"
-    ],
-    "is": [
-        "is"
-    ],
-    "am": [
-        "is"
-    ],
-    "are": [
-        "and"
-    ],
-    "laidak": [
-        "lajdak"
-    ],
-    "zero": [
-        "nul"
-    ],
-    "two": [
-        "ni"
-    ],
-    "face": [
-        "kao"
-    ],
-    "thank you": [
-        "danke"
-    ],
-    "fast": [
-        "wnele"
-    ],
-    "gay": [
-        "homo"
-    ],
-    "parentia": [
-        "parentia"
-    ],
-    "religion": [
-        "kult"
-    ],
-    "death": [
-        "wi"
-    ],
-    "suicide": [
-        "wiva"
-    ],
-    "pervert": [
-        "xentai"
-    ],
-    "sauna": [
-        "hotrum"
-    ],
-    "street": [
-        "klastervej"
-    ],
-    "earring": [
-        "irver"
-    ],
-    "day cycle": [
-        "sykl"
-    ],
-    "morning": [
-        "ryz"
-    ],
-    "evening": [
-        "set"
-    ],
-    "week": [
-        "qon"
-    ],
-    "month-season": [
-        "sizn"
-    ],
-    "year": [
-        "jer"
-    ],
-    "food chain": [
-        "kabak"
-    ],
-    "science": [
-        "kagaku"
-    ],
-    "area": [
-        "area"
-    ],
-    "verb": [
-        "aktvord"
-    ],
-    "noun": [
-        "nejmvord"
-    ],
-    "clock": [
-        "tymtel"
-    ]
+    "my": {
+        "type": "pronoun",
+        "nikaongo": [
+            "vatawi des"
+        ]
+    },
+    "mine": {
+        "type": "pronoun",
+        "nikaongo": [
+            "vatawi des"
+        ]
+    },
+    "your": {
+        "type": "pronoun",
+        "nikaongo": [
+            "ju des"
+        ]
+    },
+    "yours": {
+        "type": "pronoun",
+        "nikaongo": [
+            "ju des"
+        ]
+    },
+    "his": {
+        "type": "pronoun",
+        "nikaongo": [
+            "xi des"
+        ]
+    },
+    "her": {
+        "type": "pronoun",
+        "nikaongo": [
+            "wi des"
+        ]
+    },
+    "its": {
+        "type": "pronoun",
+        "nikaongo": [
+            "kivi des"
+        ]
+    },
+    "our": {
+        "type": "pronoun",
+        "nikaongo": [
+            "moy des"
+        ]
+    },
+    "ours": {
+        "type": "pronoun",
+        "nikaongo": [
+            "moy des"
+        ]
+    },
+    "their": {
+        "type": "pronoun",
+        "nikaongo": [
+            "grup des"
+        ]
+    },
+    "i'm": {
+        "type": "pronoun",
+        "nikaongo": [
+            "vatawi is"
+        ]
+    },
+    "train": {
+        "type": "noun",
+        "nikaongo": [
+            "transport"
+        ]
+    },
+    "bullet train": {
+        "type": "noun",
+        "nikaongo": [
+            "kontran"
+        ]
+    },
+    "metro": {
+        "type": "noun",
+        "nikaongo": [
+            "kejvtran"
+        ]
+    },
+    "tram": {
+        "type": "noun",
+        "nikaongo": [
+            "klastran"
+        ]
+    },
+    "ship": {
+        "type": "noun",
+        "nikaongo": [
+            "ownbout"
+        ]
+    },
+    "radio": {
+        "type": "noun",
+        "nikaongo": [
+            "komunikator"
+        ]
+    },
+    "rail": {
+        "type": "noun",
+        "nikaongo": [
+            "tranvej"
+        ]
+    },
+    "city": {
+        "type": "noun",
+        "nikaongo": [
+            "klaster"
+        ]
+    },
+    "fight": {
+        "type": "verb",
+        "nikaongo": [
+            "tataky"
+        ]
+    },
+    "bridge": {
+        "type": "noun",
+        "nikaongo": [
+            "riverpas"
+        ]
+    },
+    "cat": {
+        "type": "noun",
+        "nikaongo": [
+            "neko"
+        ]
+    },
+    "shower": {
+        "type": "noun",
+        "nikaongo": [
+            "rejn"
+        ]
+    },
+    "sun": {
+        "type": "noun",
+        "nikaongo": [
+            "dejlyt"
+        ]
+    },
+    "star": {
+        "type": "noun",
+        "nikaongo": [
+            "nytlyt"
+        ]
+    },
+    "photo": {
+        "type": "noun",
+        "nikaongo": [
+            "lytrekord"
+        ]
+    },
+    "theatre": {
+        "type": "noun",
+        "nikaongo": [
+            "sinstori"
+        ]
+    },
+    "armour": {
+        "type": "noun",
+        "nikaongo": [
+            "protekt"
+        ]
+    },
+    "safety goggles": {
+        "type": "noun",
+        "nikaongo": [
+            "ajzgud"
+        ]
+    },
+    "glasses": {
+        "type": "noun",
+        "nikaongo": [
+            "lenz"
+        ]
+    },
+    "mirror": {
+        "type": "noun",
+        "nikaongo": [
+            "selfsi",
+            "reflekt"
+        ]
+    },
+    "black": {
+        "type": "adjective",
+        "nikaongo": [
+            "negro"
+        ]
+    },
+    "pet": {
+        "type": "noun",
+        "nikaongo": [
+            "kompanjon"
+        ]
+    },
+    "i": {
+        "type": "pronoun",
+        "nikaongo": [
+            "vatawi"
+        ]
+    },
+    "you": {
+        "type": "pronoun",
+        "nikaongo": [
+            "ju",
+            "qu"
+        ]
+    },
+    "he": {
+        "type": "pronoun",
+        "nikaongo": [
+            "xi"
+        ]
+    },
+    "she": {
+        "type": "pronoun",
+        "nikaongo": [
+            "wi"
+        ]
+    },
+    "it": {
+        "type": "pronoun",
+        "nikaongo": [
+            "kivi"
+        ]
+    },
+    "we": {
+        "type": "pronoun",
+        "nikaongo": [
+            "moy"
+        ]
+    },
+    "they": {
+        "type": "pronoun",
+        "nikaongo": [
+            "grup"
+        ]
+    },
+    "project": {
+        "type": "noun",
+        "nikaongo": [
+            "fokusvork"
+        ]
+    },
+    "cake": {
+        "type": "noun",
+        "nikaongo": [
+            "bejkvork"
+        ]
+    },
+    "baked sweets": {
+        "type": "noun",
+        "nikaongo": [
+            "bejkvork"
+        ]
+    },
+    "electrical wire": {
+        "type": "noun",
+        "nikaongo": [
+            "paverlyn"
+        ]
+    },
+    "drown": {
+        "type": "verb",
+        "nikaongo": [
+            "aogate"
+        ]
+    },
+    "friend": {
+        "type": "noun",
+        "nikaongo": [
+            "kamrad"
+        ]
+    },
+    "foolish": {
+        "type": "adjective",
+        "nikaongo": [
+            "ba'ka"
+        ]
+    },
+    "suck": {
+        "type": "verb",
+        "nikaongo": [
+            "soy"
+        ]
+    },
+    "conzumut": {
+        "type": "verb",
+        "nikaongo": [
+            "konzumut"
+        ]
+    },
+    "have fun": {
+        "type": "verb",
+        "nikaongo": [
+            "jip'i'"
+        ]
+    },
+    "shotgun": {
+        "type": "noun",
+        "nikaongo": [
+            "vajpaut"
+        ]
+    },
+    "bullet": {
+        "type": "noun",
+        "nikaongo": [
+            "carq"
+        ]
+    },
+    "lightbulb": {
+        "type": "noun",
+        "nikaongo": [
+            "lytorb"
+        ]
+    },
+    "masturbate": {
+        "type": "verb",
+        "nikaongo": [
+            "kindrac"
+        ]
+    },
+    "and": {
+        "type": "conjunction",
+        "nikaongo": [
+            "to"
+        ]
+    },
+    "soon": {
+        "type": "noun",
+        "nikaongo": [
+            "pronto"
+        ]
+    },
+    "slut": {
+        "type": "noun",
+        "nikaongo": [
+            "wlondra"
+        ]
+    },
+    "turret": {
+        "type": "noun",
+        "nikaongo": [
+            "fortaver"
+        ]
+    },
+    "volcano": {
+        "type": "noun",
+        "nikaongo": [
+            "erapto"
+        ]
+    },
+    "diety": {
+        "type": "noun",
+        "nikaongo": [
+            "kami"
+        ]
+    },
+    "god": {
+        "type": "noun",
+        "nikaongo": [
+            "kami"
+        ]
+    },
+    "sword": {
+        "type": "noun",
+        "nikaongo": [
+            "katana"
+        ]
+    },
+    "continent": {
+        "type": "noun",
+        "nikaongo": [
+            "kontinud"
+        ]
+    },
+    "warm": {
+        "type": "adjective",
+        "nikaongo": [
+            "at'aky"
+        ]
+    },
+    "fridge": {
+        "type": "noun",
+        "nikaongo": [
+            "fudkip"
+        ]
+    },
+    "light switch": {
+        "type": "noun",
+        "nikaongo": [
+            "lyton"
+        ]
+    },
+    "drums": {
+        "type": "noun",
+        "nikaongo": [
+            "bits"
+        ]
+    },
+    "n&r moons": {
+        "type": "noun",
+        "nikaongo": [
+            "noa to ren"
+        ]
+    },
+    "nikao": {
+        "type": "noun",
+        "nikaongo": [
+            "nikao"
+        ]
+    },
+    "nikaongo": {
+        "type": "noun",
+        "nikaongo": [
+            "nikaongo"
+        ]
+    },
+    "is": {
+        "type": "verb",
+        "nikaongo": [
+            "is"
+        ]
+    },
+    "am": {
+        "type": "verb",
+        "nikaongo": [
+            "is"
+        ]
+    },
+    "are": {
+        "type": "verb",
+        "nikaongo": [
+            "and"
+        ]
+    },
+    "laidak": {
+        "type": "noun",
+        "nikaongo": [
+            "lajdak"
+        ]
+    },
+    "zero": {
+        "type": "noun",
+        "nikaongo": [
+            "nul"
+        ]
+    },
+    "two": {
+        "type": "noun",
+        "nikaongo": [
+            "ni"
+        ]
+    },
+    "face": {
+        "type": "noun",
+        "nikaongo": [
+            "kao"
+        ]
+    },
+    "thank you": {
+        "type": "noun",
+        "nikaongo": [
+            "danke"
+        ]
+    },
+    "fast": {
+        "type": "adjective",
+        "nikaongo": [
+            "wnele"
+        ]
+    },
+    "gay": {
+        "type": "adjective",
+        "nikaongo": [
+            "homo"
+        ]
+    },
+    "parentia": {
+        "type": "noun",
+        "nikaongo": [
+            "parentia"
+        ]
+    },
+    "religion": {
+        "type": "noun",
+        "nikaongo": [
+            "kult"
+        ]
+    },
+    "death": {
+        "type": "noun",
+        "nikaongo": [
+            "wi"
+        ]
+    },
+    "suicide": {
+        "type": "noun",
+        "nikaongo": [
+            "wiva"
+        ]
+    },
+    "pervert": {
+        "type": "adjective",
+        "nikaongo": [
+            "xentai"
+        ]
+    },
+    "sauna": {
+        "type": "noun",
+        "nikaongo": [
+            "hotrum"
+        ]
+    },
+    "street": {
+        "type": "noun",
+        "nikaongo": [
+            "klastervej"
+        ]
+    },
+    "earring": {
+        "type": "noun",
+        "nikaongo": [
+            "irver"
+        ]
+    },
+    "day cycle": {
+        "type": "noun",
+        "nikaongo": [
+            "sykl"
+        ]
+    },
+    "morning": {
+        "type": "noun",
+        "nikaongo": [
+            "ryz"
+        ]
+    },
+    "evening": {
+        "type": "noun",
+        "nikaongo": [
+            "set"
+        ]
+    },
+    "week": {
+        "type": "noun",
+        "nikaongo": [
+            "qon"
+        ]
+    },
+    "month-season": {
+        "type": "noun",
+        "nikaongo": [
+            "sizn"
+        ]
+    },
+    "year": {
+        "type": "noun",
+        "nikaongo": [
+            "jer"
+        ]
+    },
+    "food chain": {
+        "type": "noun",
+        "nikaongo": [
+            "kabak"
+        ]
+    },
+    "science": {
+        "type": "noun",
+        "nikaongo": [
+            "kagaku"
+        ]
+    },
+    "area": {
+        "type": "noun",
+        "nikaongo": [
+            "area"
+        ]
+    },
+    "body": {
+        "type": "noun",
+        "nikaongo": [
+            "bodi"
+        ]
+    },
+    "verb": {
+        "type": "noun",
+        "nikaongo": [
+            "aktvord"
+        ]
+    },
+    "noun": {
+        "type": "noun",
+        "nikaongo": [
+            "nejmvord"
+        ]
+    },
+    "shop": {
+        "type": "noun",
+        "nikaongo": [
+            "byhaus"
+        ]
+    },
+    "path": {
+        "type": "noun",
+        "nikaongo": [
+            "vej"
+        ]
+    },
+    "clock": {
+        "type": "noun",
+        "nikaongo": [
+            "tymtel"
+        ]
+    }
 }
