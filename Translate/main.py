@@ -1,6 +1,8 @@
 import os
 import translate as ntr
 
+# SUGGESTION: rename main.py to script.py
+
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 quit_flag: str = "-q"
