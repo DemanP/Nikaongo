@@ -16,23 +16,33 @@ en_ni_unique_symbols: dict = {
     "oo": "u",
     "w": "v",
     "th": "z",
-    "h": "x"
+    "h": "x",
+    "ph": "f",
+    "x": "ks",
 }
 en_ni_file.close()
 
 class Token:
-    text = ""
-    is_word = False
-    def __init__(self, text, is_word = False):
+    text: str = ""
+    is_word: bool = False
+    type: str = ""
+    def __init__(self, text, is_word = False, token_type = None):
         self.text = text
         self.is_word = is_word
+        self.type = token_type
     def __repr__(self):
         return f"\"{self.text}\"" + ("-w" if self.is_word else "")
     def __str__(self):
-        return self.text
+        return self.__repr__()
     def __iadd__(self, other):
         self.text += other
         return self
+
+    def get_text(self: Token) -> str:
+        return self.text
+    def get_type(self: Token) -> str:
+        return self.type
+
 def get_tokens(text: str) -> list[str]:
     if not len(text):
         return []
@@ -57,74 +67,122 @@ def get_tokens(text: str) -> list[str]:
                 is_token_a_word = True
     tokens.append(Token(token_text, is_token_a_word))
     return tokens
-
-def is_word_translatable(word: str) -> bool:
-    is_plural: bool = word.endswith("s")
-    return word in en_ni or (is_plural and word[:-1] in en_ni)
-def translate_word(word: str) -> str:
-    is_plural: bool = word.endswith("s")
-
-    translated_word: str = ""
-    if word in en_ni:
-        translated_word = en_ni[word][0]
-    elif is_plural and word[:-1] in en_ni:
-        translated_word = "ty " + en_ni[word[:-1]][0]
-    else:
-        translated_word = transliterate(word)
-    
-    return translated_word
-def translate_token_buffer(token_buffer: list[Token], debug: bool = False) -> str:
+def process_token_buffer(token_buffer: list[Token], debug: bool = False) -> list[Token]:
     if not len(token_buffer):
-        return ""
-    
-    result: str = ""
-
+        return []
+        
     # Starts at the length of the token buffer and goes down.
     # This way larger words such as "bullet train" will be translated first,
-    # before reaching word "bullet" by itself and tranlating it seperately.
+    # before reaching word "bullet" by itself and translating it seperately.
     max_buffer_index = len(token_buffer)
-
-    if debug_mode or debug:
-        print(token_buffer, end="")
-        print(f" - len({max_buffer_index})")
     
+    buffer_text: str = ""
     while max_buffer_index > 0:
         # get the current buffer text
-        buffer_text: str = ""
+        buffer_text = ""
         for add_index in range(max_buffer_index):
-            buffer_text += token_buffer[add_index].text.lower()
+            buffer_text += token_buffer[add_index].text
         
         if is_word_translatable(buffer_text):
-            # translate the given word(-s)
-            result += translate_word(buffer_text)
-            # translate the remaining tokens
-            result += translate_token_buffer(token_buffer[max_buffer_index:], debug)
-            return result
+            break
+
         max_buffer_index -= 1
 
-    result = transliterate(token_buffer[0].text.lower())
-    if len(token_buffer) > 1:
-        result += translate_token_buffer(token_buffer[1:], debug)
-    return result
-def translate(text: str, debug: bool = False) -> str:
-    tokens: list[Token] = get_tokens(text)
+    # create a processed token for the given word
+    if max_buffer_index == 0:
+        buffer_text = token_buffer[0].text
+        max_buffer_index += 1
+    newToken: Token = Token(translate_word(buffer_text))
+    if is_word_translatable(buffer_text):
+        newToken.type = en_ni[remove_plural(buffer_text)]["type"]
+    elif buffer_text.isalpha():
+        newToken.type = "u-word"
+    else:
+        newToken.type = "symbol"
 
-    token_buffer: list[Token] = []
+    return [newToken] + process_token_buffer(token_buffer[max_buffer_index:], debug)
 
-    result: str = ""
-    token_index: int = 0
-    while token_index < len(tokens):
-        token: Token = tokens[token_index]
-        if token.is_word or token.text.isspace():
-            token_buffer.append(token)
-        else:
-            result += translate_token_buffer(token_buffer, debug)
-            token_buffer.clear()
-            result += token.text
-        token_index += 1
+def is_word_plural(word: str) -> bool:
+    word = word.lower()
+    return (word.endswith("s") and word[:-1] in en_ni)\
+        or (word.endswith("ies") and (word[:-3] + "y") in en_ni)
+def remove_plural(word: str) -> str:
+    singular_word: str = word
+    if word.endswith("s") and word[:-1] in en_ni:
+        singular_word = word[:-1]
+    elif word.endswith("ies") and (word[:-3] + "y") in en_ni:
+        singular_word = word[:-3] + "y"
+    return singular_word
+
+def is_word_translatable(word: str) -> bool:
+    is_plural: bool = is_word_plural(word)
+    word = word.lower()
+    return word in en_ni or is_plural
+def translate_word(word: str) -> str:
+    is_upper: bool = word.isupper() and len(word) > 1
+    is_capitalized: bool = word[0].isupper()
+
+    word = word.lower()
+    is_plural: bool = is_word_plural(word)
     
-    result += translate_token_buffer(token_buffer, debug)
-    return result
+    translated_word: str = ""
+    if word in en_ni:
+        translated_word = en_ni[word]["nikaongo"][0]
+    elif is_plural:
+        translated_word = "ty " + en_ni[remove_plural(word)]["nikaongo"][0]
+    else:
+        translated_word = transliterate(word)
+
+    if is_upper:
+        translated_word = translated_word.upper()
+    elif is_capitalized:
+        translated_word = translated_word.capitalize()
+    
+    return translated_word
+# def translate_token_buffer(token_buffer: list[Token], debug: bool = False) -> str:
+    # if not len(token_buffer):
+    #     return ""
+    
+    # # Starts at the length of the token buffer and goes down.
+    # # This way larger words such as "bullet train" will be translated first,
+    # # before reaching word "bullet" by itself and translating it seperately.
+    # max_buffer_index = len(token_buffer)
+
+    # if debug_mode or debug:
+    #     print(token_buffer, end="")
+    #     print(f" - len({max_buffer_index})")
+    
+    # buffer_text: str = ""
+    # while max_buffer_index > 0:
+    #     # get the current buffer text
+    #     buffer_text = ""
+    #     for add_index in range(max_buffer_index):
+    #         buffer_text += token_buffer[add_index].text
+        
+    #     if is_word_translatable(buffer_text):
+    #         break
+    #     max_buffer_index -= 1
+
+    # # translate the given word(-s)
+    # if max_buffer_index == 0:
+    #     buffer_text = token_buffer[0].text
+    #     max_buffer_index += 1
+    # result: str = translate_word(buffer_text)
+    # # translate the remaining tokens
+    # result += translate_token_buffer(token_buffer[max_buffer_index:], debug)
+
+    # return result
+def translate(text: str, debug: bool = False) -> list:
+    token_buffer: list[Token] = get_tokens(text)
+    processed_token_buffer: list[Token] = process_token_buffer(token_buffer, debug)
+
+    if debug_mode or debug:
+        print(f"Tokens: {token_buffer}")
+        print(f"Processed tokens: {processed_token_buffer}")
+        print(f"Token types: {list(map(Token.get_type, processed_token_buffer))}")
+    
+    translated_text: str = ''.join(list(map(Token.get_text, processed_token_buffer)))
+    return [translated_text]
 
 def transliterate(text: str) -> str:
     result: str = ""
@@ -137,7 +195,7 @@ def transliterate(text: str) -> str:
         if symbol_index + 1 < text_length:
             next_symbol = text[symbol_index + 1]
             symbols_combo += next_symbol
-        double_letter: bool = symbol == next_symbol
+        double_letter: bool = symbol == next_symbol and symbol.isalpha()
         
         if symbol in en_ni_unique_symbols:
             result += en_ni_unique_symbols[symbol]
