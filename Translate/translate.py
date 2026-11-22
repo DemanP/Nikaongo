@@ -60,22 +60,33 @@ def get_tokens(text: str) -> list[str]:
     tokens.append(Token(token_text, is_token_a_word))
     return tokens
 
-def is_word_translatable(word: str) -> bool:
+def is_word_plural(word: str) -> bool:
     word = word.lower()
-    is_plural: bool = word.endswith("s")
-    return word in en_ni or (is_plural and word[:-1] in en_ni)
+    return (word.endswith("s") and word[:-1] in en_ni)\
+        or (word.endswith("ies") and (word[:-3] + "y") in en_ni)
+def remove_plural(word: str) -> str:
+    singular_word: str = word
+    if word.endswith("s") and word[:-1] in en_ni:
+        singular_word = word[:-1]
+    elif word.endswith("ies") and (word[:-3] + "y") in en_ni:
+        singular_word = word[:-3] + "y"
+    return singular_word
+def is_word_translatable(word: str) -> bool:
+    is_plural: bool = is_word_plural(word)
+    word = word.lower()
+    return word in en_ni or is_plural
 def translate_word(word: str) -> str:
     is_upper: bool = word.isupper() and len(word) > 1
     is_capitalized: bool = word[0].isupper()
 
     word = word.lower()
-    is_plural: bool = word.endswith("s")
+    is_plural: bool = is_word_plural(word)
     
     translated_word: str = ""
     if word in en_ni:
         translated_word = en_ni[word][0]
-    elif is_plural and word[:-1] in en_ni:
-        translated_word = "ty " + en_ni[word[:-1]][0]
+    elif is_plural:
+        translated_word = "ty " + en_ni[remove_plural(word)][0]
     else:
         translated_word = transliterate(word)
 
