@@ -135,8 +135,12 @@ def main() -> None:
         elif instruction.startswith("-f") or instruction.startswith("--fyl"):
             _, file_name, *args = instruction.split()
             wait_time: float = 0.0
-            if len(args) and args[0].isnumeric():
-                wait_time = float(args[0])
+            if len(args):
+                try:
+                    wait_time = float(args[0])
+                except:
+                    set_error(f"Vyt tym \"{args[0]}\" is not namber")
+                    continue
             parse_file(file_name, wait_time)
             continue
 
