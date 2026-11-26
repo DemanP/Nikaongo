@@ -16,7 +16,7 @@ VALUE_SYMBOL: str = "#"
 display_mode: int = 0
 display_mode_names: list[str] = ["dehimal", "xeks", "tekst"]
 
-instruction_names: list[str] = ["stor", "copi", "tkst"]
+instruction_names: list[str] = ["stor", "tkst"]
 instruction_codes: dict[str, int] = {}
 for i, name in enumerate(instruction_names):
     instruction_codes[name] = i
@@ -86,7 +86,7 @@ def print_memory(start: int, end: int) -> None:
             value_text = "{0:{width}}".format(value_text, width=value_width)
         elif display_mode == 2:
             if value == 0:
-                value_text = '×'
+                value_text = ' '
             else:
                 value_text = chr(value)
 
@@ -103,40 +103,43 @@ def get_value(code: str) -> int:
         code = code[1:]
         return memory[get_value(code)]
     return int(code)
-def exec_instruction(code: int, args: list) -> None:
+def exec_instruction(instruction: str, args: list) -> None:
     # store instruction
-    address: int = get_value(args[0])
+    address: int = int(args[0])
     if address >= MEMORY_SIZE:
         set_error(f"Ad'res' {address} not alavd. Max ad'res' is {MEMORY_SIZE - 1}")
         return
-    if code == 0:
+    if instruction == "stor":
         value: int = get_value(args[1])
         if value > MAX_VALUE:
             set_error(f"Can't store {value}, max value is {MAX_VALUE}")
             return
         memory[address] = value
-    elif code == 1:
-        address_copy: int = get_value(args[1])
-        memory[address_copy] = memory[address]
-    elif code == 2:
+    elif instruction == "tkst":
         text: str = " ".join(args[1:])
         for i in range(len(text)):
             memory[address + i] = ord(text[i])
 
-def parse_instruction(instruction: str) -> None:
+def parse_instruction(instruction: str) -> bool:
     instruction_name, *args = instruction.split()
-    if instruction_name in instruction_codes:
-        exec_instruction(instruction_codes[instruction_name], args)
-    else:
+    if instruction_name not in instruction_names:
         set_error(f"Instrakwn \"{instruction_name}\" not ekzist!")
+        return False
+    exec_instruction(instruction_name, args)
+    return True
 def parse_file(file_name: str, wait_time: float = 0.0) -> None:
     file = open(file_name, "r")
     code: str = file.read()
     file.close()
+    line_index: int = 0
     for line in code.splitlines():
-        parse_instruction(line)
-        refresh()
-        time.sleep(wait_time)
+        if not parse_instruction(line):
+            set_error(f"Fyl \"{file_name}\", lyn {line_index}: {error}")
+            return
+        if wait_time:
+            refresh()
+            time.sleep(wait_time)
+        line_index += 1
 
 def main() -> None:
     global display_mode, memory
@@ -163,12 +166,8 @@ def main() -> None:
         elif instruction.startswith("-f") or instruction.startswith("--fyl"):
             _, file_name, *args = instruction.split()
             wait_time: float = 0.0
-            if len(args):
-                try:
-                    wait_time = float(args[0])
-                except:
-                    set_error(f"Vyt tym \"{args[0]}\" is not namber")
-                    continue
+            if len(args) and args[0].isnumeric():
+                wait_time = float(args[0])
             parse_file(file_name, wait_time)
         elif instruction.startswith("-k") or instruction.startswith("--klir"):
             memory = bytearray(MEMORY_SIZE)
