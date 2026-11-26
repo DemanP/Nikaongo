@@ -102,6 +102,7 @@ def refresh() -> None:
         print(f"{CS.cError}{error}{CS.cReset}")
         set_error("")
 def print_bytearray(ba: bytearray, start: int, end: int, mode: int = 0, highlight: int = -1) -> None:
+    MAX_EMPTY_SYMBOL_VALUE: int = 32
     line_length: int = 16
     value_width: int = 4
     if mode == 2:
@@ -123,7 +124,7 @@ def print_bytearray(ba: bytearray, start: int, end: int, mode: int = 0, highligh
             value_text = hex(value)[2:].zfill(2).upper()
             value_text = "{0:{width}}".format(value_text, width=value_width)
         elif mode == 2:
-            if value == 0:
+            if value < MAX_EMPTY_SYMBOL_VALUE:
                 value_text = ' '
             else:
                 value_text = chr(value)
