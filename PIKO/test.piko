@@ -1,9 +1,6 @@
-stor 0 174
-stor 1 #0
-stor 2 #0
-stor 3 #0
-stor 4 #0
-stor 5 #0
-stor 6 #0
-stor 7 #0
-tkst 32 vatawi jip'i'
+stor 0 5
+stor 1 1
+inkr 0
+inkr 0
+inkr 1
+qump 6
