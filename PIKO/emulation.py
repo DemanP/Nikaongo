@@ -29,8 +29,8 @@ stor <ad'res'> <valju>
     Eksampl: stor 0 174
 copi <ad'res'> <copi ad'res'>
     Eksampl: copi 0 1
-tekst <ad'res'> <tekst>
-    Eksampl: tekst 0 Xelo vorld!
+tkst <ad'res'> <tekst>
+    Eksampl: tkst 0 Xelo vorld!
 '''
 
 def set_error(error_text: str) -> None:
