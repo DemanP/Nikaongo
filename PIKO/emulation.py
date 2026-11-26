@@ -16,8 +16,6 @@ instruction_names: list[str] = ["stor", "copi", "tkst"]
 instruction_codes: dict[str, int] = {}
 for i, name in enumerate(instruction_names):
     instruction_codes[name] = i
-print(instruction_codes)
-input()
 
 error: str = ""
 help_info: str =\
