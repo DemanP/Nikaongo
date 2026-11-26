@@ -1,0 +1,21 @@
+{
+	"scopeName": "source.piko",
+	"patterns": [{ "include": "#expression" }],
+	"repository": {
+		"expression": {
+			"patterns": [{ "include": "#instructions" }, { "include": "#symbols" }, { "include": "#numbers" }]
+		},
+		"instructions": {
+			"match": "stor|copi|tkst",
+			"name": "keyword.instruction"
+		},
+		"symbols": {
+			"match": "#",
+			"name": "keyword.symbol"
+		},
+		"numbers": {
+			"name": "constant.numeric.number",
+			"match": "[\\d]+"
+		}
+	}
+}
