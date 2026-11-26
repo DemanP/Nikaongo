@@ -4,12 +4,14 @@
 
 ```txt
 Emulation commands:
--x | --xelp - print help info
--d | --displej <mod> - change display mode (0 - decimal, 1 - hex, 2 - text)
+-x | --xelp                        - print help info
+--                                 - exit
+-d | --displej <mod>               - change display mode (0 - decimal, 1 - hex, 2 - text)
     Example: -d 2
+-e | --eksekjut <wait time>        - execute program until pauz (instruction); wait time is in seconds
 -f | --fyl <file name> <wait time> - execute a file; wait time is in seconds
     Example: -f test.piko 1
--k | --klir <modes> - clear
+-k | --klir <modes>                - clear data
     Examples:
         -k (clear all)
         -k m (clear memory)
@@ -38,18 +40,18 @@ Use #<address> to read value (aka use the value from the address).
 
 ```txt
 Emulejwn ty komand:
--x | --xelp - print xelp info
--d | --displej <mod> - cenq displej mod (0 - dehimal, 1 - xeks, 2 - tekst)
+-x | --xelp                      - print xelp info
+--                               - eksit
+-d | --displej <mod>             - cenq displej mod (0 - dehimal, 1 - xeks, 2 - tekst)
     Eksampl: -d 2
--f | --fyl <fyl nejm> <vejt tym> - eksekjut e fyl; vejt tym is ty sekond
+-e | --eksekjut <vejt tym>       - eksekjut program antil pauz; vejt tym is ty sekond
+-f | --fyl <fyl nejm> <vejt tym> - wryt ty isntrackwn from e fyl to eksekjut kivi; vejt tym is ty sekond
     Eksampl: -f test.piko 1
--k | --klir <ty mod> - klir memori
+-k | --klir <ty mod>             - klir data
     Ty eksampl:
         -k (klir ol)
         -k m (klir memori)
         -k p (klir program)
-
-Nout: pres' Enter on empti lyn tu continju eksekjuwn
 
 PIKO ty instrakwn:
 stor <ad'res'> <valju>

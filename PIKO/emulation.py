@@ -27,21 +27,30 @@ HEX_SYMBOL: str = "x"
 display_mode: int = 0
 display_mode_names: list[str] = ["dehimal", "xeks", "tekst"]
 
-instruction_names: list[str] = ["stor", "copi", "tkst", "qump", "inkr"]
+instruction_names: dict[int, str] = {
+    0:   "stor",
+    1:   "copi",
+    2:   "tkst",
+    3:   "qump",
+    4:   "inkr",
+    255: "pauz"
+}
 instruction_codes: dict[str, int] = {}
-for i, name in enumerate(instruction_names):
-    instruction_codes[name] = i
+for i in instruction_names:
+    instruction_codes[instruction_names[i]] = i
 
 error: str = ""
 help_info: str =\
 '''
 Emulejwn ty komand:
--x | --xelp - print xelp info
--d | --displej <mod> - cenq displej mod (0 - dehimal, 1 - xeks, 2 - tekst)
+-x | --xelp                      - print xelp info
+--                               - eksit
+-d | --displej <mod>             - cenq displej mod (0 - dehimal, 1 - xeks, 2 - tekst)
     Eksampl: -d 2
--f | --fyl <fyl nejm> <vejt tym> - eksekjut e fyl; vejt tym is ty sekond
+-e | --eksekjut <vejt tym>       - eksekjut program antil pauz; vejt tym is ty sekond
+-f | --fyl <fyl nejm> <vejt tym> - wryt ty isntrackwn from e fyl to eksekjut kivi; vejt tym is ty sekond
     Eksampl: -f test.piko 1
--k | --klir <ty mod> - klir memori
+-k | --klir <ty mod>             - klir data
     Ty eksampl:
         -k (klir ol)
         -k m (klir memori)
@@ -155,6 +164,8 @@ def exec_instruction(instruction_code: int, args: list[int]) -> None:
     if address >= MEMORY_SIZE:
         set_error(f"Ad'res' {address} not alavd. Max ad'res' is {MEMORY_SIZE - 1}")
         return
+    
+    # -- Storing Data --
     if instruction == "stor":
         value: int = args[1]
 
@@ -166,18 +177,25 @@ def exec_instruction(instruction_code: int, args: list[int]) -> None:
     elif instruction == "copi":
         copy_from_address: int = args[1]
         write_memory(address, read_memory(copy_from_address))
-    
     elif instruction == "tkst":
         characters: list[int] = args[1:]
         for i in range(len(characters)):
             write_memory(address + i, characters[i])
+    
+    # -- Addresses --
     elif instruction == "qump":
         global program_pointer, program_write_pointer
         program_pointer = address # jump to the address
         program_write_pointer = address
-    
+
+    # -- Value Manipulations --
     elif instruction == "inkr":
         write_memory(address, read_memory(address) + 1)
+    
+    # -- Other --
+    elif instruction == "pauz":
+        global program_running
+        program_running = False
 def exec_current_instruction() -> None:
     global program_pointer
 
@@ -204,7 +222,7 @@ def exec_current_instruction() -> None:
 def parse_instruction(instruction: str) -> bool:
     global program_write_pointer
     instruction_name, *args = instruction.split()
-    if instruction_name not in instruction_names:
+    if instruction_name not in instruction_codes:
         set_error(f"Instrakwn \"{instruction_name}\" not ekzist!")
         return False
 
@@ -263,7 +281,7 @@ def main() -> None:
         if instruction == "" or instruction.isspace():
             exec_current_instruction()
             program_write_pointer = program_pointer
-        elif instruction.startswith("-e") or instruction.startswith("--eksit"):
+        elif instruction.startswith("--"):
             running = False
             print(f"{CS.cDebug}Eksit{CS.cReset}")
         elif instruction.startswith("-d") or instruction.startswith("--displej"):
@@ -291,6 +309,13 @@ def main() -> None:
                 program = bytearray(PROGRAM_SIZE)
                 program_pointer = 0
                 program_write_pointer = 0
+        elif instruction.startswith("-e") or instruction.startswith("--eksekjut"):
+            _, *args = instruction.split()
+            try:
+                wait_time = float(args[0])
+            except:
+                wait_time = MIN_WAIT_TIME
+            program_running = True
         else:
             if parse_instruction(instruction):
                 exec_current_instruction()
