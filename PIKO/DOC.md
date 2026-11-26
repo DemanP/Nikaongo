@@ -15,6 +15,8 @@ Emulation commands:
         -k m (clear memory)
         -k p (clear program)
 
+Note: press Enter on an empty line to contine execution
+
 PIKO instructions:
 stor <address> <value>
     Example: stor 0 174
@@ -46,6 +48,8 @@ Emulejwn ty komand:
         -k (klir ol)
         -k m (klir memori)
         -k p (klir program)
+
+Nout: pres' Enter on empti lyn tu continju eksekjuwn
 
 PIKO ty instrakwn:
 stor <ad'res'> <valju>

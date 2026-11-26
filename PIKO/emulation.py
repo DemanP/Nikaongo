@@ -26,7 +26,7 @@ VALUE_SYMBOL: str = "#"
 display_mode: int = 0
 display_mode_names: list[str] = ["dehimal", "xeks", "tekst"]
 
-instruction_names: list[str] = ["stor", "tkst", "qump", "inkr"]
+instruction_names: list[str] = ["stor", "copi", "tkst", "qump", "inkr"]
 instruction_codes: dict[str, int] = {}
 for i, name in enumerate(instruction_names):
     instruction_codes[name] = i
@@ -75,7 +75,7 @@ def write_memory(address: int, value: int) -> None:
         set_error(f"Value {value} is tu big, maks valju is {MAX_VALUE}")
         return
     memory[address] = value
-def get_memory(address: int) -> int:
+def read_memory(address: int) -> int:
     if address >= MEMORY_SIZE:
         set_error(f"Memori ad'res' {address} is tu big, maks memori ad'res' is {MEMORY_SIZE - 1}")
         return 0
@@ -141,7 +141,7 @@ def print_memory(start: int, end: int) -> None:
 def get_value(code: str) -> int:
     if code.startswith(VALUE_SYMBOL):
         code = code[1:]
-        return get_memory(get_value(code))
+        return read_memory(get_value(code))
     return int(code)
 def exec_instruction(instruction_code: int, args: list[int]) -> None:
     # store instruction
@@ -152,10 +152,16 @@ def exec_instruction(instruction_code: int, args: list[int]) -> None:
         return
     if instruction == "stor":
         value: int = args[1]
-        if value > MAX_VALUE:
-            set_error(f"Can't store {value}, max value is {MAX_VALUE}")
-            return
-        write_memory(address, value)
+
+        hex_address: str = hex(address)[2:]
+        if hex_address[0] == "f": # all F_ addresses are registers
+            write_memory(read_memory(address), value)
+        else: # otherwise store normally
+            write_memory(address, value)
+    elif instruction == "copi":
+        copy_from_address: int = args[1]
+        write_memory(address, read_memory(copy_from_address))
+    
     elif instruction == "tkst":
         characters: list[int] = args[1:]
         for i in range(len(characters)):
@@ -166,7 +172,7 @@ def exec_instruction(instruction_code: int, args: list[int]) -> None:
         program_write_pointer = address
     
     elif instruction == "inkr":
-        write_memory(address, get_memory(address) + 1)
+        write_memory(address, read_memory(address) + 1)
 def exec_current_instruction() -> None:
     global program_pointer
 

@@ -6,7 +6,7 @@
 			"patterns": [{ "include": "#instructions" }, { "include": "#symbols" }, { "include": "#numbers" }]
 		},
 		"instructions": {
-			"match": "stor|tkst|inkr|qump",
+			"match": "stor|copi|tkst|inkr|qump",
 			"name": "keyword.instruction"
 		},
 		"symbols": {
