@@ -1,6 +1,7 @@
-import os
+import os, time
 import colors as CS
 
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 MAX_VALUE: int = 255
 MEMORY_SIZE: int = 256
@@ -22,7 +23,10 @@ help_info: str =\
 '''
 Ty komand:
 -x | --xelp - print xelp info
--d | --displej - cenq displej mod (0 - dehimal, 1 - xeks, 2 - tekst)
+-d | --displej <mod> - cenq displej mod (0 - dehimal, 1 - xeks, 2 - tekst)
+    Eksampl: -d 2
+-f | --fyl <fyl nejm> <vejt tym> - eksekjut e fyl; vejt tym is ty sekond
+    Eksampl: -f test.piko 1
 
 Ty instrakwn:
 stor <ad'res'> <valju>
@@ -37,6 +41,17 @@ def set_error(error_text: str) -> None:
     global error
     error = error_text
 
+def refresh() -> None:
+    os.system("cls")
+    print("-- PIKO Emulejwn --")
+    print(f"[Memori | {MEMORY_SIZE} ty byt]")
+    print_memory(0, MEMORY_SIZE)
+    print()
+    print(f"{CS.cDebug}[?] --xelp or -x for xelp{CS.cReset}")
+    if error:
+        print()
+        print(f"{CS.cError}{error}{CS.cReset}")
+        set_error("")
 def print_memory(start: int, end: int) -> None:
     line_length: int = 16
     for i in range(start, end):
@@ -78,27 +93,37 @@ def exec_instruction(code: int, args: list) -> None:
         for i in range(len(text)):
             memory[address + i] = ord(text[i])
 
+def parse_instruction(instruction: str) -> None:
+    instruction_name, *args = instruction.split()
+    if instruction_name in instruction_codes:
+        exec_instruction(instruction_codes[instruction_name], args)
+    else:
+        set_error(f"Instrakwn \"{instruction_name}\" not ekzist!")
+def parse_file(file_name: str, wait_time: float = 0.0) -> None:
+    file = open(file_name, "r")
+    code: str = file.read()
+    file.close()
+    for line in code.splitlines():
+        parse_instruction(line)
+        refresh()
+        time.sleep(wait_time)
+
 def main() -> None:
     global display_type
 
     running: bool = True
     while running:
-        os.system("cls")
-        print("-- PIKO Emulejwn --")
-        print(f"[Memori | {MEMORY_SIZE} ty byt]")
-        print_memory(0, MEMORY_SIZE)
-        print()
-        print(f"{CS.cDebug}[?] --xelp or -x for xelp{CS.cReset}")
-        if error:
-            print()
-            print(f"{CS.cError}{error}{CS.cReset}")
-            set_error("")
-        
+        refresh()
+
         instruction: str = input(">>> ")
         
         if instruction == "" or instruction.isspace():
             continue
-        elif instruction.startswith("-d"):
+        elif instruction.startswith("-e") or instruction.startswith("--eksit"):
+            running = False
+            print(f"{CS.cDebug}Eksit{CS.cReset}")
+            continue
+        elif instruction.startswith("-d") or instruction.startswith("--displej"):
             _, d_type = instruction.split()
             display_type = int(d_type)
             continue
@@ -107,11 +132,14 @@ def main() -> None:
             print(help_info)
             input("Pres Enter tu ekzit...")
             continue
+        elif instruction.startswith("-f") or instruction.startswith("--fyl"):
+            _, file_name, *args = instruction.split()
+            wait_time: float = 0.0
+            if len(args) and args[0].isnumeric():
+                wait_time = float(args[0])
+            parse_file(file_name, wait_time)
+            continue
 
-        instruction_name, *args = instruction.split()
-        if instruction_name in instruction_codes:
-            exec_instruction(instruction_codes[instruction_name], args)
-        else:
-            set_error(f"Instrakwn \"{instruction_name}\" not ekzist!")
+        parse_instruction(instruction)
 
 main()
