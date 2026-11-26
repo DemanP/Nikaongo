@@ -18,6 +18,7 @@ MIN_WAIT_TIME: float = 1 / 60
 wait_time: float = MIN_WAIT_TIME
 
 VALUE_SYMBOL: str = "#"
+HEX_SYMBOL: str = "x"
 
 # Display Modes:
 # 0 - decimal (default)
@@ -142,6 +143,9 @@ def get_value(code: str) -> int:
     if code.startswith(VALUE_SYMBOL):
         code = code[1:]
         return read_memory(get_value(code))
+    if code.startswith(HEX_SYMBOL):
+        code = code.removeprefix(HEX_SYMBOL)
+        return int(code, 16)
     return int(code)
 def exec_instruction(instruction_code: int, args: list[int]) -> None:
     # store instruction
