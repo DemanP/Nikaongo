@@ -618,5 +618,233 @@
         "nikaongo": [
             "tymtel"
         ]
+    },
+    "tell": {
+        "type": "verb",
+        "nikaongo": [
+            "tel"
+        ]
+    },
+    "about": {
+        "type": "noun",
+        "nikaongo": [
+            "ebaut"
+        ]
+    },
+    "crazy": {
+        "type": "adv.",
+        "nikaongo": [
+            "krejzi"
+        ]
+    },
+    "big": {
+        "type": "adjective",
+        "nikaongo": [
+            "big"
+        ]
+    },
+    "small": {
+        "type": "noun",
+        "nikaongo": [
+            "smol"
+        ]
+    },
+    "rare": {
+        "type": "adjective",
+        "nikaongo": [
+            "rejr"
+        ]
+    },
+    "light": {
+        "type": "noun",
+        "nikaongo": [
+            "lyt"
+        ]
+    },
+    "ocean": {
+        "type": "noun",
+        "nikaongo": [
+            "own"
+        ]
+    },
+    "to like": {
+        "type": "verb",
+        "nikaongo": [
+            "lyk"
+        ]
+    },
+    "work ": {
+        "type": "noun",
+        "nikaongo": [
+            "vork"
+        ]
+    },
+    "day": {
+        "type": "noun",
+        "nikaongo": [
+            "dej"
+        ]
+    },
+    "night": {
+        "type": "noun",
+        "nikaongo": [
+            "nyt"
+        ]
+    },
+    "river": {
+        "type": "noun",
+        "nikaongo": [
+            "river"
+        ]
+    },
+    "erupt": {
+        "type": "verb",
+        "nikaongo": [
+            "erapt"
+        ]
+    },
+    "bake": {
+        "type": "verb",
+        "nikaongo": [
+            "bejk"
+        ]
+    },
+    "good": {
+        "type": "adjective",
+        "nikaongo": [
+            "gud"
+        ]
+    },
+    "pass": {
+        "type": "verb",
+        "nikaongo": [
+            "pas"
+        ]
+    },
+    "end": {
+        "type": "noun",
+        "nikaongo": [
+            "end"
+        ]
+    },
+    "time": {
+        "type": "noun",
+        "nikaongo": [
+            "tym"
+        ]
+    },
+    "metal": {
+        "type": "noun",
+        "nikaongo": [
+            "metal"
+        ]
+    },
+    "heart": {
+        "type": "noun",
+        "nikaongo": [
+            "hart"
+        ]
+    },
+    "mutation": {
+        "type": "noun",
+        "nikaongo": [
+            "mjutejwn"
+        ]
+    },
+    "new": {
+        "type": "adjective",
+        "nikaongo": [
+            "njuv"
+        ]
+    },
+    "age": {
+        "type": "noun",
+        "nikaongo": [
+            "ejq"
+        ]
+    },
+    "cool": {
+        "type": "adjective",
+        "nikaongo": [
+            "kul"
+        ]
+    },
+    "eye": {
+        "type": "noun",
+        "nikaongo": [
+            "aj"
+        ]
+    },
+    "ear": {
+        "type": "noun",
+        "nikaongo": [
+            "ir"
+        ]
+    },
+    "nice": {
+        "type": "adjective",
+        "nikaongo": [
+            "nys"
+        ]
+    },
+    "have": {
+        "type": "verb",
+        "nikaongo": [
+            "xev"
+        ]
+    },
+    "staff": {
+        "type": "noun",
+        "nikaongo": [
+            "staf"
+        ]
+    },
+    "only": {
+        "type": "noun",
+        "nikaongo": [
+            "onli"
+        ]
+    },
+    "scene": {
+        "type": "noun",
+        "nikaongo": [
+            "sin"
+        ]
+    },
+    "story": {
+        "type": "noun",
+        "nikaongo": [
+            "stori"
+        ]
+    },
+    "mister": {
+        "type": "noun",
+        "nikaongo": [
+            "mister"
+        ]
+    },
+    "power": {
+        "type": "noun",
+        "nikaongo": [
+            "paver"
+        ]
+    },
+    "line": {
+        "type": "noun",
+        "nikaongo": [
+            "lyn"
+        ]
+    },
+    "hot": {
+        "type": "noun",
+        "nikaongo": [
+            "hot"
+        ]
+    },
+    "room": {
+        "type": "noun",
+        "nikaongo": [
+            "rum"
+        ]
     }
 }
