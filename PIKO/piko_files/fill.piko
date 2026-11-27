@@ -1,3 +1,4 @@
-strr xFF 174 ! store referenced 174 to the address stored in xFF
-inkr xFF     ! increment the pointer address
-qump 0       ! jump to the beginning
+loop             ! loop label to jump to
+    strr xFF 174 ! store referenced 174 to the address stored in xFF
+    inkr xFF     ! increment the pointer address
+    qump loop    ! jump to the beginning

@@ -43,22 +43,29 @@ for i in instruction_names:
 
 # console/emulator
 running: bool = True
+labels: dict[str, int] = {}
+
 error: str = ""
 help_info: str =\
 f'''
 Emulejwn ty komand:
--x | --xelp                      - print xelp info
---                               - eksit
--d | --displej <mod>             - cenq displej mod (0 - dehimal, 1 - xeks, 2 - tekst)
+-x | --xelp                         - print xelp info
+--                                  - eksit
+-d | --displej <mod>                - cenq displej mod (0 - dehimal, 1 - xeks, 2 - tekst)
     Eksampl: -d 2
--e | --eksekjut <vejt tym>       - eksekjut program antil pauz; vejt tym is ty sekond
--f | --fyl <fyl nejm> <vejt tym> - wryt ty isntrackwn from e fyl to eksekjut kivi; vejt tym is ty sekond
-    Eksampl: -f test.piko 1
--k | --klir <ty mod>             - klir data
-    Ty eksampl:
-        -k (klir ol)
-        -k m (klir memori)
-        -k p (klir program)
+-e | --eksekjut <vejt tym>          - eksekjut program antil pauz; vejt tym is ty sekond
+-f | --fyl
+    <fyl nejm> <vejt tym> <ty fleg> - wryt ty isntrackwn from e fyl to eksekjut kivi; vejt tym is ty sekond
+    Ty fleg:
+        -w  = wov fyl ty instrakwn
+    Eksampl: -f test.piko 1 -w
+-k | --klir <ty mod>                - klir data
+    Ty mod:
+        -k   = klir ol
+        -k m = klir memori
+        -k p = klir program
+        -k l = klir ty lejbel
+    Eksampl: -k m l <= klir memori to ty lejbel
 
 PIKO ty instrakwn:
 {CS.cKeyword}stor{CS.cReset} <ad'res'> <valju>
@@ -117,7 +124,13 @@ def refresh() -> None:
     print_memory(0, MEMORY_SIZE)
 
     print(f"[PROGRAM | {PROGRAM_SIZE} ty byt]")
-    print_bytearray(program, 0, PROGRAM_SIZE, mode = 1, highlight = program_pointer)
+    print_program(0, PROGRAM_SIZE)
+
+    if len(labels):
+        print()
+        print("Ty lejbel")
+        for i, label in enumerate(labels):
+            print(CS.cLabels[i % len(CS.cLabels)] + f"{label} - x{hex(labels[label])[2:].zfill(2).upper()}" + CS.cReset)
 
     print()
     print(f"{CS.cDebug}[?] --xelp or -x for xelp{CS.cReset}")
@@ -125,7 +138,7 @@ def refresh() -> None:
         print()
         print(f"{CS.cError}{error}{CS.cReset}")
         set_error("")
-def print_bytearray(ba: bytearray, start: int, end: int, mode: int = 0, highlight: int = -1) -> None:
+def print_bytearray(ba: bytearray, start: int, end: int, mode: int = 0, highlights: dict[int, list[str]] = {}) -> None:
     MAX_EMPTY_SYMBOL_VALUE: int = 32
     line_length: int = 16
     value_width: int = 4
@@ -136,11 +149,11 @@ def print_bytearray(ba: bytearray, start: int, end: int, mode: int = 0, highligh
 
     start_line: bool = True
     print("┌" + line + "┐")
-    for i in range(start, end):
+    for index in range(start, end):
         if start_line:
             print("│", end="")
             start_line = False
-        value: int = ba[i]
+        value: int = ba[index]
         value_text: str = str(value)
         if mode == 0:
             value_text = "{0:{width}}".format(value_text, width=value_width)
@@ -152,17 +165,37 @@ def print_bytearray(ba: bytearray, start: int, end: int, mode: int = 0, highligh
                 value_text = ' '
             else:
                 value_text = chr(value)
-        if i == highlight:
-            value_text = CS.cHighlight + value_text + CS.cReset
+        
+        if index in highlights:
+            value_text_copy = value_text
+            value_text = ""
+            for char_index, char in enumerate(value_text_copy):
+                highlight_index: int = int(char_index / len(value_text_copy) * len(highlights[index]))
+                value_text += highlights[index][highlight_index]
+                value_text += char
+            value_text += CS.cReset
+            # value_text = highlights[index][0] + value_text + CS.cReset
+        
         print(value_text, end = "")
-        if (i - start) % line_length == line_length - 1:
+        if (index - start) % line_length == line_length - 1:
             print("│")
             start_line = True
     print("└" + line + "┘")
     if (end - start) % line_length != 0:
         print()
 def print_memory(start: int, end: int) -> None:
-    print_bytearray(memory, start, end, mode = display_mode)
+    print_bytearray(memory, start, end, mode = display_mode,
+                    highlights = {
+                        
+                    })
+def print_program(start: int, end: int) -> None:
+    highlights: dict[int, list[str]] = { program_pointer: [CS.cHighlight] }
+    for i, label in enumerate(labels):
+        label_address: int = labels[label]
+        if label_address not in highlights:
+            highlights[label_address] = []
+        highlights[label_address].append(CS.cLabels[i % len(CS.cLabels)])
+    print_bytearray(program, start, end, mode = 1, highlights = highlights)
 
 def get_value(code: str) -> int:
     if code.startswith(VALUE_SYMBOL):
@@ -242,17 +275,45 @@ def exec_current_instruction() -> None:
             increment_program_pointer()
     exec_instruction(instruction_code, args)
 
-def parse_instruction(instruction: str) -> bool:
+def remove_comment(line: str) -> str:
+    a = line.split(COMMENT_SYMBOL)
+    return a[0]
+def analyze_instruction(instruction: str, address: int) -> tuple[int, bool]:
+    instruction_name, *args = instruction.split()
+
+    # write byte codes for this instruction
+    codes_count: int = 1
+    if instruction_name == "tkst":
+        codes_count += 2 # add 2 for address and text length
+        text: str = " ".join(args[1:])
+        codes_count += len(text)
+    else:
+        codes_count += len(args)
+
+    added_label: bool = instruction_name not in instruction_codes and instruction_name[0].isalpha() and not len(args)
+    if added_label:
+        labels[instruction_name] = address
+    
+    return codes_count, added_label
+def parse_instruction(instruction: str, write: bool = True) -> bool:
     global program_write_pointer
 
     # remove the comments
-    instruction = instruction.split(COMMENT_SYMBOL)[0]
+    instruction = remove_comment(instruction)
 
     # if empty line, there is no instruction, but no error, so return True
     if instruction.isspace() or instruction == "":
         return True
 
-    instruction_name, *args = instruction.split()
+    instruction_name, *_args = instruction.split()
+    args: list[str] = []
+
+    # label handling
+    for arg in _args:
+        if arg in labels:
+            arg = str(labels[arg])
+        args.append(arg)
+    
     if instruction_name not in instruction_codes:
         set_error(f"Instrakwn \"{instruction_name}\" not ekzist!")
         return False
@@ -269,25 +330,51 @@ def parse_instruction(instruction: str) -> bool:
         for arg in args:
             codes.append(get_value(arg))
 
-    # write byte codes into program data
-    for code in codes:
-        program[program_write_pointer] = code
-        program_write_pointer += 1
-    if len(codes) - 1 < MIN_ARGS:
-        program_write_pointer += MIN_ARGS - len(codes) + 1
+    if write:
+        # write byte codes into program data
+        for code in codes:
+            program[program_write_pointer] = code
+            program_write_pointer += 1
+        if len(codes) - 1 < MIN_ARGS:
+            program_write_pointer += MIN_ARGS - len(codes) + 1
     
     return True
-def parse_file(file_name: str) -> None:
+def parse_file(file_name: str, show_contents: bool = False) -> None:
     global program_running
     file = open(file_name, "r")
     code: str = file.read()
     file.close()
-    line_index: int = 0
+    
+    cleaned_code: str = ""
     for line in code.splitlines():
+        cleaned_code += remove_comment(line) + "\n"
+
+    if show_contents:
+        clear_screen()
+        print("-- Fyl ty instrakwn --")
+        print(cleaned_code)
+        input()
+
+    analyzed_code: str = ""
+    program_address: int = program_write_pointer
+    for line in cleaned_code.splitlines():
+        if line.isspace() or line == "":
+            continue
+
+        length, added_label = analyze_instruction(line, program_address)
+        
+        if not added_label:
+            analyzed_code += line + "\n"
+        program_address += length
+
+    # parse the instructions
+    line_index: int = 0
+    for line in analyzed_code.splitlines():
         if not parse_instruction(line):
             set_error(f"Fyl \"{file_name}\", lyn {line_index}: {error}")
             return
         line_index += 1
+    
     program_running = True
 
 
@@ -312,10 +399,10 @@ def exec_command(command: str) -> None:
             wait_time = float(args[0])
         except:
             wait_time = MIN_WAIT_TIME
-        parse_file(file_name)
+        parse_file(file_name, "-w" in args)
     elif command in ("-k", "--klir"):
         global memory, program
-        clean_mode: list[str] = ["m", "p"]
+        clean_mode: list[str] = ["m", "p", "l"] # default clean mode is cleaning all
         if len(args):
             clean_mode = args
         if "m" in clean_mode:
@@ -324,6 +411,8 @@ def exec_command(command: str) -> None:
             program = bytearray(PROGRAM_SIZE)
             program_pointer = 0
             program_write_pointer = 0
+        if "l" in clean_mode:
+            labels.clear()
     elif command in ("-e", "--eksekjut"):
         global program_running
         try:
@@ -334,7 +423,11 @@ def exec_command(command: str) -> None:
     elif command in ("-p", "--pojnter"):
         address: int = 0
         if len(args):
-            address = get_value(args[0])
+            address_arg: str = args[0]
+            if address_arg in labels:
+                address = labels[address_arg]
+            else:
+                address = get_value(address_arg)
         program_pointer = address
         program_write_pointer = address
 def console() -> None:
@@ -361,6 +454,10 @@ def console() -> None:
         elif instruction.startswith("-"):
             exec_command(instruction)
         else:
+            _, added_label = analyze_instruction(instruction, program_write_pointer)
+            if added_label:
+                continue
+
             if parse_instruction(instruction):
                 exec_current_instruction()
 

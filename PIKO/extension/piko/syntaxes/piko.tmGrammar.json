@@ -12,7 +12,7 @@
 			]
 		},
 		"instructions": {
-			"match": "stor|strr|copi|tkst|inkr|qump",
+			"match": "stor|strr|copi|tkst|inkr|qump ",
 			"name": "keyword.instruction"
 		},
 		"numbers": {
