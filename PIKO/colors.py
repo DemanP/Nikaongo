@@ -7,6 +7,7 @@ cDebug: str     = "\x1b[38;2;14;80;130m"
 cKeyword: str   = "\x1b[38;5;10m"
 
 cHighlight: str = "\x1b[47m"
+cRegister: str  = "\x1b[48;5;237m"
 cLabels: list[str] = [
     "\x1b[48;5;8m",
     "\x1b[48;5;9m",

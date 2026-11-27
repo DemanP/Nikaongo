@@ -8,11 +8,13 @@
 				{ "include": "#numbers" },
 				{ "include": "#hex_numbers" },
 				
+				{ "include": "#symbols" },
+
 				{ "include": "#comments" }
 			]
 		},
 		"instructions": {
-			"match": "stor|strr|copi|tkst|inkr|qump ",
+			"match": "stor|copi|tkst|inkr|qump|pauz",
 			"name": "keyword.instruction"
 		},
 		"numbers": {
@@ -22,6 +24,11 @@
 		"hex_numbers": {
 			"name": "constant.numeric.hex",
 			"match": "x[a-fA-F0-9]{2}"
+		},
+		
+		"symbols": {
+			"name": "keyword.symbol",
+			"match": "#"
 		},
 
 		"comments": {
