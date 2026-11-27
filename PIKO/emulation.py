@@ -10,6 +10,7 @@ wait_time: float = MIN_WAIT_TIME
 
 COMMENT_SYMBOL: str = "!"
 VALUE_SYMBOL:   str = "#"
+BINARY_SYMBOL:  str = "b"
 HEX_SYMBOL:     str = "x"
 
 # Display Modes:
@@ -180,6 +181,9 @@ def get_value(code: str) -> int:
     if code.startswith(HEX_SYMBOL):
         code = code.removeprefix(HEX_SYMBOL)
         return int(code, 16)
+    elif code.startswith(BINARY_SYMBOL):
+        code = code.removeprefix(BINARY_SYMBOL)
+        return int(code, 2)
     return int(code)
 
 def remove_comment(line: str) -> str:
