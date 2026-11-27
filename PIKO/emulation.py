@@ -14,8 +14,11 @@ program: bytearray = bytearray(PROGRAM_SIZE)
 program_write_pointer: int = 0
 program_pointer: int = 0
 program_running: bool = False
-MIN_WAIT_TIME: float = 1 / 60
+MIN_WAIT_TIME: float = 0.0
 wait_time: float = MIN_WAIT_TIME
+
+interrupt_outside: bool = False
+output_terminal: bool = True
 
 COMMENT_SYMBOL: str = "!"
 VALUE_SYMBOL:   str = "#"
@@ -116,6 +119,9 @@ def increment_program_pointer() -> None:
 def clear_screen() -> None:
     os.system("cls")
 def refresh() -> None:
+    if not output_terminal:
+        return
+
     clear_screen()
     print("-- PIKO Emulejwn --")
 
@@ -253,8 +259,12 @@ def exec_instruction(instruction_code: int, args: list[int]) -> None:
         global program_running
         program_running = False
 def exec_current_instruction() -> None:
-    global program_pointer
-
+    global program_pointer, interrupt_outside
+    if interrupt_outside:
+        global program_running
+        program_running = False
+        interrupt_outside = False
+        set_error("Interapted from autsyd.")
     instruction_code: int = program[program_pointer]
     args: list[int] = []
     increment_program_pointer()
@@ -339,12 +349,15 @@ def parse_instruction(instruction: str, write: bool = True) -> bool:
             program_write_pointer += MIN_ARGS - len(codes) + 1
     
     return True
-def parse_file(file_name: str, show_contents: bool = False) -> None:
+def parse_text(filename_or_text: str, show_contents: bool = False, is_file: bool = True) -> None:
     global program_running
-    file = open(file_name, "r")
-    code: str = file.read()
-    file.close()
-    
+    if is_file:
+        file = open(filename_or_text, "r")
+        code: str = file.read()
+        file.close()
+    else:
+        code = filename_or_text
+
     cleaned_code: str = ""
     for line in code.splitlines():
         cleaned_code += remove_comment(line) + "\n"
@@ -371,7 +384,7 @@ def parse_file(file_name: str, show_contents: bool = False) -> None:
     line_index: int = 0
     for line in analyzed_code.splitlines():
         if not parse_instruction(line):
-            set_error(f"Fyl \"{file_name}\", lyn {line_index}: {error}")
+            set_error(f"Fyl \"{filename_or_text}\", lyn {line_index}: {error}")
             return
         line_index += 1
     
@@ -394,12 +407,12 @@ def exec_command(command: str) -> None:
         print(help_info)
         input("Pres Enter tu ekzit...")
     elif command in ("-f", "--fyl"):
-        file_name, *args = args
+        filename_or_text, *args = args
         try:
             wait_time = float(args[0])
         except:
             wait_time = MIN_WAIT_TIME
-        parse_file(file_name, "-w" in args)
+        parse_text(filename_or_text, "-w" in args)
     elif command in ("-k", "--klir"):
         global memory, program
         clean_mode: list[str] = ["m", "p", "l"] # default clean mode is cleaning all
@@ -431,7 +444,7 @@ def exec_command(command: str) -> None:
         program_pointer = address
         program_write_pointer = address
 def console() -> None:
-    global running, program_write_pointer, program_running
+    global running, program_write_pointer, program_running, output_terminal
 
     while running:
         # if program is running
@@ -445,6 +458,13 @@ def console() -> None:
 
         # and this all is live writing and executing the program
         refresh()
+        if not output_terminal:  # exits if doesn't work from terminal
+            output_terminal = True
+            refresh()
+            running = False
+            output_terminal = False
+            # TODO get it to return all relevant data needed instead.
+            continue
 
         instruction: str = input(">>> ")
         
@@ -465,7 +485,7 @@ def main() -> None:
     if len(sys.argv) > 1:
         global wait_time
         wait_time = MIN_WAIT_TIME
-        parse_file(sys.argv[1])
+        parse_text(sys.argv[1])
     console()
 
 if __name__ == "__main__":
