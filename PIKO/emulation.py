@@ -275,11 +275,60 @@ def parse_file(file_name: str, show_contents: bool = False) -> None:
     file = open(file_name, "r")
     code: str = file.read()
     file.close()
+
+    if show_contents:
+        print("-- Fyl ty instrakwn --")
+        print(code)
     
     error_line_index: int = parse_text(code)
     if error_line_index >= 0:
         set_error(f"Fyl \"{file_name}\", lyn {error_line_index}: {error}")
 
+def program_to_piko() -> str:
+    def format_value(value: int) -> str:
+        str_hex: function = lambda num: 'x' + hex(num)[2:].zfill(2).upper()
+        add_value_symbol: bool = False
+        if value & 0b10000000 != 0:
+            add_value_symbol = True
+            value = value & 0b01111111
+        str_value: str = str_hex(value)
+        if add_value_symbol:
+            str_value = VALUE_SYMBOL + str_value
+        return str_value
+
+    # pointer: int = PIO.program_pointer
+    pointer: int = 0
+    code: str = ""
+
+    while pointer < PIO.PROGRAM_SIZE:
+        line: str = ""
+        instruction: int = PIO.read_program(pointer)
+        pointer += 1
+        instruction_name: str = PIO.instruction_names[instruction]
+        line += instruction_name
+
+        if instruction_name == "tkst":
+            address: int = PIO.read_program(pointer)
+            pointer += 1
+            line += ' '+ format_value(address)
+
+            text_length: int = PIO.read_program(pointer)
+            pointer += 1
+            line += ' '
+            for i in range(len(text_length)):
+                char: str = chr(PIO.read_program(pointer))
+                pointer += 1
+        elif instruction_name == "pauz":
+            pointer = PIO.PROGRAM_SIZE
+        else:
+            for i in range(PIO.MIN_ARGS):
+                arg: int = PIO.read_program(pointer)
+                pointer += 1
+                line += ' '+ format_value(arg)
+        line += "\n"
+        code += line
+    
+    return code
 
 def exec_command(command: str) -> None:
     global wait_time
@@ -329,6 +378,13 @@ def exec_command(command: str) -> None:
                 address = get_value(address_arg)
         PIO.program_pointer = address
         PIO.program_write_pointer = address
+    elif command in ("-s", "--sejv"):
+        file_name: str = args[0]
+        code: str = program_to_piko()
+        if file_name:
+            file = open(file_name, "w")
+            file.write(code)
+            file.close()
 def console() -> None:
     global running
 
