@@ -45,6 +45,10 @@ Emulejwn ty komand:
         -k p = klir program
         -k l = klir ty lejbel
     Eksampl: -k m l <= klir memori to ty lejbel
+-p | --pojnt <program ad'res'>      - muv program pojnter tu program ad'res'
+    Ty eksampl:
+        -p xAE
+        -p lejbl  <= muv tu lejbl
 
 
 PIKO ty instrakwn:
