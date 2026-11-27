@@ -1,4 +1,7 @@
-loop             ! loop label to jump to
-    strr xFF 174 ! store referenced 174 to the address stored in xFF
-    inkr xFF     ! increment the pointer address
-    qump loop    ! jump to the beginning
+stor x7F 0        ! store 0 into x7F, as there might be garbage
+loop              ! loop label to jump to
+    stor #x7F 64  ! store referenced 174 to the address stored in xFF
+    inkr x7F      ! increment the pointer address
+    
+    qump loop x6F ! jump to loop if value in x6F is 0
+pauz

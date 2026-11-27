@@ -4,7 +4,7 @@ import colors as CS
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 MAX_VALUE: int = 255
-MEMORY_SIZE: int = 256
+MEMORY_SIZE: int = 128
 memory: bytearray = bytearray(MEMORY_SIZE)
 
 MIN_ARGS: int = 2
@@ -34,7 +34,8 @@ instruction_names: dict[int, str] = {
     2:   "tkst",
     3:   "qump",
     4:   "inkr",
-    5:   "strr",
+    5:   "ksor",
+    
     255: "pauz"
 }
 instruction_codes: dict[str, int] = {}
@@ -67,17 +68,23 @@ Emulejwn ty komand:
         -k l = klir ty lejbel
     Eksampl: -k m l <= klir memori to ty lejbel
 
+
 PIKO ty instrakwn:
-{CS.cKeyword}stor{CS.cReset} <ad'res'> <valju>
+{CS.cKeyword}stor{CS.cReset} <ad'res'> <valju>                    = stor valju in ad'res'
     Eksampl: stor 0 174
-{CS.cKeyword}tkst{CS.cReset} <ad'res'> <tekst>
+{CS.cKeyword}tkst{CS.cReset} <ad'res'> <tekst>                    = stor tekst in ad'res'
     Eksampl: tkst 0 Xelo vorld!
-{CS.cKeyword}inkr{CS.cReset} <ad'res'>
+
+{CS.cKeyword}inkr{CS.cReset} <ad'res'>                            = inkrement valju in ad'res'
     Eksampl: inkr 0
     174 in ad'res' 0 => 175 in ad'res' 0
-{CS.cKeyword}qump{CS.cReset} <program ad'res'>
+{CS.cKeyword}ksor{CS.cReset} <ad'res'> <valju>                    = ekslusiv or bitvin valju in ad'res' to valju to stor in ad'res'
+
+{CS.cKeyword}qump{CS.cReset} <program ad'res'> <koniwn ad'res'>   = qump tu ad'res' if valji in kondiwn ad'res' is 0
     Eksampl: qump 3
     Nout: jus program kao tu get ad'res'
+
+{CS.cKeyword}pauz{CS.cReset}                                      = pauz ty instrakwn
 
 Jus ! simbol for ty kom'ent.
 Jus #<ad'res'> tu rid valju.
@@ -105,11 +112,12 @@ def read_memory(address: int) -> int:
     return memory[address]
 
 def set_program_pointer(address: int) -> None:
-    global program_pointer, program_running
+    global program_pointer, program_write_pointer, program_running
     program_pointer = address
     if program_pointer >= PROGRAM_SIZE:
         program_running = False
         program_pointer = PROGRAM_SIZE - 1
+        program_write_pointer = program_pointer
 def increment_program_pointer() -> None:
     set_program_pointer(program_pointer + 1)
 
@@ -121,10 +129,10 @@ def refresh() -> None:
 
     print(f"[MEMORI | {MEMORY_SIZE} ty byt]", end=" ")
     print(f"[Displej mod: {display_mode_names[display_mode]}]")
-    print_memory(0, MEMORY_SIZE)
+    print_memory()
 
     print(f"[PROGRAM | {PROGRAM_SIZE} ty byt]")
-    print_program(0, PROGRAM_SIZE)
+    print_program()
 
     if len(labels):
         print()
@@ -144,7 +152,7 @@ def print_bytearray(ba: bytearray, start: int, end: int, mode: int = 0, highligh
     value_width: int = 4
     if mode == 2:
         value_width = 1
-        line_length *= 2
+        # line_length *= 2
     line: str = "─" * line_length * value_width
 
     start_line: bool = True
@@ -183,32 +191,49 @@ def print_bytearray(ba: bytearray, start: int, end: int, mode: int = 0, highligh
     print("└" + line + "┘")
     if (end - start) % line_length != 0:
         print()
-def print_memory(start: int, end: int) -> None:
-    print_bytearray(memory, start, end, mode = display_mode,
-                    highlights = {
-                        
-                    })
-def print_program(start: int, end: int) -> None:
+def print_memory() -> None:
+    highlights: dict[int, list[str]] = {}
+    for i in range(0x70, 0x7F + 1):
+        highlights[i] = [CS.cRegister]
+
+    end: int = MEMORY_SIZE
+    if display_mode == 2:
+        end -= 16
+    print_bytearray(memory, 0, end, mode = display_mode, highlights = highlights)
+def print_program() -> None:
     highlights: dict[int, list[str]] = { program_pointer: [CS.cHighlight] }
+
+    if program_write_pointer not in highlights:
+        highlights[program_write_pointer] = []
+    highlights[program_write_pointer].append(CS.cRegister)
+    
     for i, label in enumerate(labels):
         label_address: int = labels[label]
         if label_address not in highlights:
             highlights[label_address] = []
         highlights[label_address].append(CS.cLabels[i % len(CS.cLabels)])
-    print_bytearray(program, start, end, mode = 1, highlights = highlights)
+    print_bytearray(program, 0, PROGRAM_SIZE, mode = 1, highlights = highlights)
 
 def get_value(code: str) -> int:
     if code.startswith(VALUE_SYMBOL):
         code = code[1:]
-        return read_memory(get_value(code))
+        return get_value(code) | 0b10000000
+        # return read_memory(get_value(code))
     if code.startswith(HEX_SYMBOL):
         code = code.removeprefix(HEX_SYMBOL)
         return int(code, 16)
     return int(code)
+def parse_address(address: int) -> int:
+    if address & 0b10000000 != 0:
+        address = address & 0b01111111
+        address = read_memory(address)
+    return address
 def exec_instruction(instruction_code: int, args: list[int]) -> None:
+    global program_write_pointer
+
     # store instruction
     instruction: str = instruction_names[instruction_code]
-    address: int = args[0]
+    address: int = parse_address(args[0])
     
     if address >= MEMORY_SIZE:
         set_error(f"Ad'res' {address} not alavd. Max ad'res' is {MEMORY_SIZE - 1}")
@@ -218,20 +243,14 @@ def exec_instruction(instruction_code: int, args: list[int]) -> None:
     if instruction == "stor":
         value: int = args[1]
         write_memory(address, value)
-
-        # hex_address: str = hex(address)[2:]
-        # if hex_address[0] == "f": # all F_ addresses are registers
-        #     write_memory(read_memory(address), value)
-        # else: # otherwise store normally
-        #     write_memory(address, value)
     elif instruction == "strr":
         address = read_memory(address)
         # hex_address: str = hex(address)[2:]
         # if hex_address[0] == "f": # all F_ addresses are registers
-        value: int = args[1]
+        value: int = parse_address(args[1])
         write_memory(address, value)
     elif instruction == "copi":
-        copy_from_address: int = args[1]
+        copy_from_address: int = parse_address(args[1])
         write_memory(address, read_memory(copy_from_address))
     elif instruction == "tkst":
         characters: list[int] = args[1:]
@@ -240,18 +259,25 @@ def exec_instruction(instruction_code: int, args: list[int]) -> None:
     
     # -- Addresses --
     elif instruction == "qump":
-        global program_pointer, program_write_pointer
-        program_pointer = address # jump to the address
-        program_write_pointer = address
+        global program_pointer
+        condition_address: int = parse_address(args[1])
+        if not read_memory(condition_address):
+            program_pointer = address # jump to the address
+            program_write_pointer = address
 
     # -- Value Manipulations --
     elif instruction == "inkr":
         write_memory(address, read_memory(address) + 1)
+    elif instruction == "ksor":
+        value: int = args[1]
+        value = read_memory(address) ^ value
+        write_memory(address, value)
     
     # -- Other --
     elif instruction == "pauz":
         global program_running
         program_running = False
+        program_write_pointer = program_pointer
 def exec_current_instruction() -> None:
     global program_pointer
 
