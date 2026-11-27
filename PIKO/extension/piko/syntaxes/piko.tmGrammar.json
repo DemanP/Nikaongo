@@ -14,7 +14,7 @@
 			]
 		},
 		"instructions": {
-			"match": "stor|copi|tkst|inkr|qump|pauz ",
+			"match": "stor|copi|tkst|inkr|qump|pauz",
 			"name": "keyword.instruction"
 		},
 		"numbers": {
