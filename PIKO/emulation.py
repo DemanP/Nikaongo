@@ -17,8 +17,9 @@ program_running: bool = False
 MIN_WAIT_TIME: float = 1 / 60
 wait_time: float = MIN_WAIT_TIME
 
-VALUE_SYMBOL: str = "#"
-HEX_SYMBOL: str = "x"
+COMMENT_SYMBOL: str = "!"
+VALUE_SYMBOL:   str = "#"
+HEX_SYMBOL:     str = "x"
 
 # Display Modes:
 # 0 - decimal (default)
@@ -40,9 +41,11 @@ instruction_codes: dict[str, int] = {}
 for i in instruction_names:
     instruction_codes[instruction_names[i]] = i
 
+# console/emulator
+running: bool = True
 error: str = ""
 help_info: str =\
-'''
+f'''
 Emulejwn ty komand:
 -x | --xelp                      - print xelp info
 --                               - eksit
@@ -58,21 +61,23 @@ Emulejwn ty komand:
         -k p (klir program)
 
 PIKO ty instrakwn:
-stor <ad'res'> <valju>
+{CS.cKeyword}stor{CS.cReset} <ad'res'> <valju>
     Eksampl: stor 0 174
-tkst <ad'res'> <tekst>
+{CS.cKeyword}tkst{CS.cReset} <ad'res'> <tekst>
     Eksampl: tkst 0 Xelo vorld!
-inkr <ad'res'>
+{CS.cKeyword}inkr{CS.cReset} <ad'res'>
     Eksampl: inkr 0
     174 in ad'res' 0 => 175 in ad'res' 0
-qump <program ad'res'>
+{CS.cKeyword}qump{CS.cReset} <program ad'res'>
     Eksampl: qump 3
     Nout: jus program kao tu get ad'res'
 
+Jus ! simbol for ty kom'ent.
 Jus #<ad'res'> tu rid valju.
     Eksampl: stor #0 174
     62 in ad'res' 0 => stor 62 174
 '''
+
 
 def set_error(error_text: str) -> None:
     global error
@@ -91,6 +96,15 @@ def read_memory(address: int) -> int:
         set_error(f"Memori ad'res' {address} is tu big, maks memori ad'res' is {MEMORY_SIZE - 1}")
         return 0
     return memory[address]
+
+def set_program_pointer(address: int) -> None:
+    global program_pointer, program_running
+    program_pointer = address
+    if program_pointer >= PROGRAM_SIZE:
+        program_running = False
+        program_pointer = PROGRAM_SIZE - 1
+def increment_program_pointer() -> None:
+    set_program_pointer(program_pointer + 1)
 
 def clear_screen() -> None:
     os.system("cls")
@@ -210,26 +224,34 @@ def exec_current_instruction() -> None:
 
     instruction_code: int = program[program_pointer]
     args: list[int] = []
-    program_pointer += 1
+    increment_program_pointer()
     if instruction_names[instruction_code] == "tkst":
         address: int = program[program_pointer]
         args.append(address)
-        program_pointer += 1
+        increment_program_pointer()
 
         text_length: int = program[program_pointer]
-        program_pointer += 1
+        increment_program_pointer()
         
         for i in range(text_length):
             args.append(program[program_pointer])
-            program_pointer += 1
+            increment_program_pointer()
     else:
         for i in range(MIN_ARGS):
             args.append(program[program_pointer])
-            program_pointer += 1
+            increment_program_pointer()
     exec_instruction(instruction_code, args)
 
 def parse_instruction(instruction: str) -> bool:
     global program_write_pointer
+
+    # remove the comments
+    instruction = instruction.split(COMMENT_SYMBOL)[0]
+
+    # if empty line, there is no instruction, but no error, so return True
+    if instruction.isspace() or instruction == "":
+        return True
+
     instruction_name, *args = instruction.split()
     if instruction_name not in instruction_codes:
         set_error(f"Instrakwn \"{instruction_name}\" not ekzist!")
@@ -268,10 +290,56 @@ def parse_file(file_name: str) -> None:
         line_index += 1
     program_running = True
 
-def console() -> None:
-    global display_mode, memory, program, program_pointer, program_write_pointer, wait_time, program_running
 
-    running: bool = True
+def exec_command(command: str) -> None:
+    global wait_time, program_pointer, program_write_pointer
+    command, *args = command.split()
+    if command == "--":
+        global running
+        running = False
+        print(f"{CS.cDebug}Eksit{CS.cReset}")
+    elif command in ("-d", "--displej"):
+        global display_mode
+        d_type = args[0]
+        display_mode = int(d_type)
+    elif command in ("-x", "--xelp"):
+        clear_screen()
+        print(help_info)
+        input("Pres Enter tu ekzit...")
+    elif command in ("-f", "--fyl"):
+        file_name, *args = args
+        try:
+            wait_time = float(args[0])
+        except:
+            wait_time = MIN_WAIT_TIME
+        parse_file(file_name)
+    elif command in ("-k", "--klir"):
+        global memory, program
+        clean_mode: list[str] = ["m", "p"]
+        if len(args):
+            clean_mode = args
+        if "m" in clean_mode:
+            memory = bytearray(MEMORY_SIZE)
+        if "p" in clean_mode:
+            program = bytearray(PROGRAM_SIZE)
+            program_pointer = 0
+            program_write_pointer = 0
+    elif command in ("-e", "--eksekjut"):
+        global program_running
+        try:
+            wait_time = float(args[0])
+        except:
+            wait_time = MIN_WAIT_TIME
+        program_running = True
+    elif command in ("-p", "--pojnter"):
+        address: int = 0
+        if len(args):
+            address = get_value(args[0])
+        program_pointer = address
+        program_write_pointer = address
+def console() -> None:
+    global running, program_write_pointer, program_running
+
     while running:
         # if program is running
         while program_running:
@@ -290,41 +358,8 @@ def console() -> None:
         if instruction == "" or instruction.isspace():
             exec_current_instruction()
             program_write_pointer = program_pointer
-        elif instruction.startswith("--"):
-            running = False
-            print(f"{CS.cDebug}Eksit{CS.cReset}")
-        elif instruction.startswith("-d") or instruction.startswith("--displej"):
-            _, d_type = instruction.split()
-            display_mode = int(d_type)
-        elif instruction.startswith("-x") or instruction.startswith("--xelp"):
-            clear_screen()
-            print(help_info)
-            input("Pres Enter tu ekzit...")
-        elif instruction.startswith("-f") or instruction.startswith("--fyl"):
-            _, file_name, *args = instruction.split()
-            try:
-                wait_time = float(args[0])
-            except:
-                wait_time = MIN_WAIT_TIME
-            parse_file(file_name)
-        elif instruction.startswith("-k") or instruction.startswith("--klir"):
-            _, *args = instruction.split()
-            clean_mode: list[str] = ["m", "p"]
-            if len(args):
-                clean_mode = args
-            if "m" in clean_mode:
-                memory = bytearray(MEMORY_SIZE)
-            if "p" in clean_mode:
-                program = bytearray(PROGRAM_SIZE)
-                program_pointer = 0
-                program_write_pointer = 0
-        elif instruction.startswith("-e") or instruction.startswith("--eksekjut"):
-            _, *args = instruction.split()
-            try:
-                wait_time = float(args[0])
-            except:
-                wait_time = MIN_WAIT_TIME
-            program_running = True
+        elif instruction.startswith("-"):
+            exec_command(instruction)
         else:
             if parse_instruction(instruction):
                 exec_current_instruction()

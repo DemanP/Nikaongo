@@ -3,19 +3,30 @@
 	"patterns": [{ "include": "#expression" }],
 	"repository": {
 		"expression": {
-			"patterns": [{ "include": "#instructions" }, { "include": "#symbols" }, { "include": "#numbers" }]
+			"patterns": [
+				{ "include": "#instructions" },
+				{ "include": "#numbers" },
+				{ "include": "#hex_numbers" },
+				
+				{ "include": "#comments" }
+			]
 		},
 		"instructions": {
-			"match": "stor|copi|tkst|inkr|qump",
+			"match": "stor|strr|copi|tkst|inkr|qump",
 			"name": "keyword.instruction"
 		},
-		"symbols": {
-			"match": "#",
-			"name": "keyword.symbol"
-		},
 		"numbers": {
-			"name": "constant.numeric.number",
+			"name": "constant.numeric.decimal",
 			"match": "[\\d]+"
+		},
+		"hex_numbers": {
+			"name": "constant.numeric.hex",
+			"match": "x[a-fA-F0-9]{2}"
+		},
+
+		"comments": {
+			"name": "comment.inline",
+			"match": "!.*"
 		}
 	}
 }
