@@ -1,19 +1,10 @@
+import pio as PIO
 import os, sys, time
 import colors as CS
 
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
-MAX_VALUE: int = 255
-MEMORY_SIZE: int = 128
-memory: bytearray = bytearray(MEMORY_SIZE)
 
-MIN_ARGS: int = 2
-
-PROGRAM_SIZE: int = 256
-program: bytearray = bytearray(PROGRAM_SIZE)
-program_write_pointer: int = 0
-program_pointer: int = 0
-program_running: bool = False
 MIN_WAIT_TIME: float = 1 / 60
 wait_time: float = MIN_WAIT_TIME
 
@@ -28,19 +19,6 @@ HEX_SYMBOL:     str = "x"
 display_mode: int = 0
 display_mode_names: list[str] = ["dehimal", "xeks", "tekst"]
 
-instruction_names: dict[int, str] = {
-    0:   "stor",
-    1:   "copi",
-    2:   "tkst",
-    3:   "qump",
-    4:   "inkr",
-    5:   "ksor",
-    
-    255: "pauz"
-}
-instruction_codes: dict[str, int] = {}
-for i in instruction_names:
-    instruction_codes[instruction_names[i]] = i
 
 # console/emulator
 running: bool = True
@@ -97,41 +75,17 @@ def set_error(error_text: str) -> None:
     global error
     error = error_text
 
-def write_memory(address: int, value: int) -> None:
-    if address >= MEMORY_SIZE:
-        set_error(f"Memori ad'res' {address} is tu big, maks memori ad'res' is {MEMORY_SIZE - 1}")
-        return
-    elif value > MAX_VALUE:
-        set_error(f"Value {value} is tu big, maks valju is {MAX_VALUE}")
-        return
-    memory[address] = value
-def read_memory(address: int) -> int:
-    if address >= MEMORY_SIZE:
-        set_error(f"Memori ad'res' {address} is tu big, maks memori ad'res' is {MEMORY_SIZE - 1}")
-        return 0
-    return memory[address]
-
-def set_program_pointer(address: int) -> None:
-    global program_pointer, program_write_pointer, program_running
-    program_pointer = address
-    if program_pointer >= PROGRAM_SIZE:
-        program_running = False
-        program_pointer = PROGRAM_SIZE - 1
-        program_write_pointer = program_pointer
-def increment_program_pointer() -> None:
-    set_program_pointer(program_pointer + 1)
-
 def clear_screen() -> None:
     os.system("cls")
 def refresh() -> None:
     clear_screen()
     print("-- PIKO Emulejwn --")
 
-    print(f"[MEMORI | {MEMORY_SIZE} ty byt]", end=" ")
+    print(f"[MEMORI | {PIO.MEMORY_SIZE} ty byt]", end=" ")
     print(f"[Displej mod: {display_mode_names[display_mode]}]")
     print_memory()
 
-    print(f"[PROGRAM | {PROGRAM_SIZE} ty byt]")
+    print(f"[PROGRAM | {PIO.PROGRAM_SIZE} ty byt]")
     print_program()
 
     if len(labels):
@@ -196,23 +150,23 @@ def print_memory() -> None:
     for i in range(0x70, 0x7F + 1):
         highlights[i] = [CS.cRegister]
 
-    end: int = MEMORY_SIZE
+    end: int = PIO.MEMORY_SIZE
     if display_mode == 2:
         end -= 16
-    print_bytearray(memory, 0, end, mode = display_mode, highlights = highlights)
+    print_bytearray(PIO.memory, 0, end, mode = display_mode, highlights = highlights)
 def print_program() -> None:
-    highlights: dict[int, list[str]] = { program_pointer: [CS.cHighlight] }
+    highlights: dict[int, list[str]] = { PIO.program_pointer: [CS.cHighlight] }
 
-    if program_write_pointer not in highlights:
-        highlights[program_write_pointer] = []
-    highlights[program_write_pointer].append(CS.cRegister)
+    if PIO.program_write_pointer not in highlights:
+        highlights[PIO.program_write_pointer] = []
+    highlights[PIO.program_write_pointer].append(CS.cRegister)
     
     for i, label in enumerate(labels):
         label_address: int = labels[label]
         if label_address not in highlights:
             highlights[label_address] = []
         highlights[label_address].append(CS.cLabels[i % len(CS.cLabels)])
-    print_bytearray(program, 0, PROGRAM_SIZE, mode = 1, highlights = highlights)
+    print_bytearray(PIO.program, 0, PIO.PROGRAM_SIZE, mode = 1, highlights = highlights)
 
 def get_value(code: str) -> int:
     if code.startswith(VALUE_SYMBOL):
@@ -223,83 +177,6 @@ def get_value(code: str) -> int:
         code = code.removeprefix(HEX_SYMBOL)
         return int(code, 16)
     return int(code)
-def parse_address(address: int) -> int:
-    if address & 0b10000000 != 0:
-        address = address & 0b01111111
-        address = read_memory(address)
-    return address
-def exec_instruction(instruction_code: int, args: list[int]) -> None:
-    global program_write_pointer
-
-    # store instruction
-    instruction: str = instruction_names[instruction_code]
-    address: int = parse_address(args[0])
-    
-    if address >= MEMORY_SIZE:
-        set_error(f"Ad'res' {address} not alavd. Max ad'res' is {MEMORY_SIZE - 1}")
-        return
-    
-    # -- Storing Data --
-    if instruction == "stor":
-        value: int = args[1]
-        write_memory(address, value)
-    elif instruction == "strr":
-        address = read_memory(address)
-        # hex_address: str = hex(address)[2:]
-        # if hex_address[0] == "f": # all F_ addresses are registers
-        value: int = parse_address(args[1])
-        write_memory(address, value)
-    elif instruction == "copi":
-        copy_from_address: int = parse_address(args[1])
-        write_memory(address, read_memory(copy_from_address))
-    elif instruction == "tkst":
-        characters: list[int] = args[1:]
-        for i in range(len(characters)):
-            write_memory(address + i, characters[i])
-    
-    # -- Addresses --
-    elif instruction == "qump":
-        global program_pointer
-        condition_address: int = parse_address(args[1])
-        if not read_memory(condition_address):
-            program_pointer = address # jump to the address
-            program_write_pointer = address
-
-    # -- Value Manipulations --
-    elif instruction == "inkr":
-        write_memory(address, read_memory(address) + 1)
-    elif instruction == "ksor":
-        value: int = args[1]
-        value = read_memory(address) ^ value
-        write_memory(address, value)
-    
-    # -- Other --
-    elif instruction == "pauz":
-        global program_running
-        program_running = False
-        program_write_pointer = program_pointer
-def exec_current_instruction() -> None:
-    global program_pointer
-
-    instruction_code: int = program[program_pointer]
-    args: list[int] = []
-    increment_program_pointer()
-    if instruction_names[instruction_code] == "tkst":
-        address: int = program[program_pointer]
-        args.append(address)
-        increment_program_pointer()
-
-        text_length: int = program[program_pointer]
-        increment_program_pointer()
-        
-        for i in range(text_length):
-            args.append(program[program_pointer])
-            increment_program_pointer()
-    else:
-        for i in range(MIN_ARGS):
-            args.append(program[program_pointer])
-            increment_program_pointer()
-    exec_instruction(instruction_code, args)
 
 def remove_comment(line: str) -> str:
     a = line.split(COMMENT_SYMBOL)
@@ -316,14 +193,12 @@ def analyze_instruction(instruction: str, address: int) -> tuple[int, bool]:
     else:
         codes_count += len(args)
 
-    added_label: bool = instruction_name not in instruction_codes and instruction_name[0].isalpha() and not len(args)
+    added_label: bool = instruction_name not in PIO.instruction_codes and instruction_name[0].isalpha() and not len(args)
     if added_label:
         labels[instruction_name] = address
     
     return codes_count, added_label
 def parse_instruction(instruction: str, write: bool = True) -> bool:
-    global program_write_pointer
-
     # remove the comments
     instruction = remove_comment(instruction)
 
@@ -340,12 +215,12 @@ def parse_instruction(instruction: str, write: bool = True) -> bool:
             arg = str(labels[arg])
         args.append(arg)
     
-    if instruction_name not in instruction_codes:
+    if instruction_name not in PIO.instruction_codes:
         set_error(f"Instrakwn \"{instruction_name}\" not ekzist!")
         return False
 
     # write byte codes for this instruction
-    codes: list[int] = [instruction_codes[instruction_name]]
+    codes: list[int] = [PIO.instruction_codes[instruction_name]]
     if instruction_name == "tkst":
         codes.append(int(args[0])) # append the write address
         text: str = " ".join(args[1:])
@@ -359,30 +234,19 @@ def parse_instruction(instruction: str, write: bool = True) -> bool:
     if write:
         # write byte codes into program data
         for code in codes:
-            program[program_write_pointer] = code
-            program_write_pointer += 1
-        if len(codes) - 1 < MIN_ARGS:
-            program_write_pointer += MIN_ARGS - len(codes) + 1
+            PIO.write_program(PIO.program_write_pointer, code)
+            PIO.program_write_pointer += 1
+        if len(codes) - 1 < PIO.MIN_ARGS:
+            PIO.program_write_pointer += PIO.MIN_ARGS - len(codes) + 1
     
     return True
-def parse_file(file_name: str, show_contents: bool = False) -> None:
-    global program_running
-    file = open(file_name, "r")
-    code: str = file.read()
-    file.close()
-    
+def parse_text(text: str) -> int:
     cleaned_code: str = ""
-    for line in code.splitlines():
+    for line in text.splitlines():
         cleaned_code += remove_comment(line) + "\n"
 
-    if show_contents:
-        clear_screen()
-        print("-- Fyl ty instrakwn --")
-        print(cleaned_code)
-        input()
-
     analyzed_code: str = ""
-    program_address: int = program_write_pointer
+    program_address: int = PIO.program_write_pointer
     for line in cleaned_code.splitlines():
         if line.isspace() or line == "":
             continue
@@ -397,15 +261,24 @@ def parse_file(file_name: str, show_contents: bool = False) -> None:
     line_index: int = 0
     for line in analyzed_code.splitlines():
         if not parse_instruction(line):
-            set_error(f"Fyl \"{file_name}\", lyn {line_index}: {error}")
-            return
+            return line_index
         line_index += 1
     
-    program_running = True
+    PIO.program_running = True
+
+    return -1
+def parse_file(file_name: str, show_contents: bool = False) -> None:
+    file = open(file_name, "r")
+    code: str = file.read()
+    file.close()
+    
+    error_line_index: int = parse_text(code)
+    if error_line_index >= 0:
+        set_error(f"Fyl \"{file_name}\", lyn {error_line_index}: {error}")
 
 
 def exec_command(command: str) -> None:
-    global wait_time, program_pointer, program_write_pointer
+    global wait_time
     command, *args = command.split()
     if command == "--":
         global running
@@ -427,25 +300,21 @@ def exec_command(command: str) -> None:
             wait_time = MIN_WAIT_TIME
         parse_file(file_name, "-w" in args)
     elif command in ("-k", "--klir"):
-        global memory, program
         clean_mode: list[str] = ["m", "p", "l"] # default clean mode is cleaning all
         if len(args):
             clean_mode = args
         if "m" in clean_mode:
-            memory = bytearray(MEMORY_SIZE)
+            PIO.reset_memory()
         if "p" in clean_mode:
-            program = bytearray(PROGRAM_SIZE)
-            program_pointer = 0
-            program_write_pointer = 0
+            PIO.reset_program()
         if "l" in clean_mode:
             labels.clear()
     elif command in ("-e", "--eksekjut"):
-        global program_running
         try:
             wait_time = float(args[0])
         except:
             wait_time = MIN_WAIT_TIME
-        program_running = True
+        PIO.program_running = True
     elif command in ("-p", "--pojnter"):
         address: int = 0
         if len(args):
@@ -454,17 +323,17 @@ def exec_command(command: str) -> None:
                 address = labels[address_arg]
             else:
                 address = get_value(address_arg)
-        program_pointer = address
-        program_write_pointer = address
+        PIO.program_pointer = address
+        PIO.program_write_pointer = address
 def console() -> None:
-    global running, program_write_pointer, program_running
+    global running
 
     while running:
         # if program is running
-        while program_running:
-            exec_current_instruction()
+        while PIO.program_running:
+            PIO.exec_current_instruction()
             if error:
-                program_running = False
+                PIO.program_running = False
             elif wait_time:
                 refresh()
                 time.sleep(wait_time)
@@ -475,17 +344,17 @@ def console() -> None:
         instruction: str = input(">>> ")
         
         if instruction == "" or instruction.isspace():
-            exec_current_instruction()
-            program_write_pointer = program_pointer
+            PIO.exec_current_instruction()
+            PIO.program_write_pointer = PIO.program_pointer
         elif instruction.startswith("-"):
             exec_command(instruction)
         else:
-            _, added_label = analyze_instruction(instruction, program_write_pointer)
+            _, added_label = analyze_instruction(instruction, PIO.program_write_pointer)
             if added_label:
                 continue
 
             if parse_instruction(instruction):
-                exec_current_instruction()
+                PIO.exec_current_instruction()
 
 def main() -> None:
     if len(sys.argv) > 1:
