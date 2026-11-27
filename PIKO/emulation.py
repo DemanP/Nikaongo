@@ -1,4 +1,4 @@
-import os, time
+import os, sys, time
 import colors as CS
 
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
@@ -33,6 +33,7 @@ instruction_names: dict[int, str] = {
     2:   "tkst",
     3:   "qump",
     4:   "inkr",
+    5:   "strr",
     255: "pauz"
 }
 instruction_codes: dict[str, int] = {}
@@ -161,6 +162,7 @@ def exec_instruction(instruction_code: int, args: list[int]) -> None:
     # store instruction
     instruction: str = instruction_names[instruction_code]
     address: int = args[0]
+    
     if address >= MEMORY_SIZE:
         set_error(f"Ad'res' {address} not alavd. Max ad'res' is {MEMORY_SIZE - 1}")
         return
@@ -168,12 +170,19 @@ def exec_instruction(instruction_code: int, args: list[int]) -> None:
     # -- Storing Data --
     if instruction == "stor":
         value: int = args[1]
+        write_memory(address, value)
 
-        hex_address: str = hex(address)[2:]
-        if hex_address[0] == "f": # all F_ addresses are registers
-            write_memory(read_memory(address), value)
-        else: # otherwise store normally
-            write_memory(address, value)
+        # hex_address: str = hex(address)[2:]
+        # if hex_address[0] == "f": # all F_ addresses are registers
+        #     write_memory(read_memory(address), value)
+        # else: # otherwise store normally
+        #     write_memory(address, value)
+    elif instruction == "strr":
+        address = read_memory(address)
+        # hex_address: str = hex(address)[2:]
+        # if hex_address[0] == "f": # all F_ addresses are registers
+        value: int = args[1]
+        write_memory(address, value)
     elif instruction == "copi":
         copy_from_address: int = args[1]
         write_memory(address, read_memory(copy_from_address))
@@ -259,7 +268,7 @@ def parse_file(file_name: str) -> None:
         line_index += 1
     program_running = True
 
-def main() -> None:
+def console() -> None:
     global display_mode, memory, program, program_pointer, program_write_pointer, wait_time, program_running
 
     running: bool = True
@@ -320,5 +329,12 @@ def main() -> None:
             if parse_instruction(instruction):
                 exec_current_instruction()
 
+def main() -> None:
+    if len(sys.argv) > 1:
+        global wait_time
+        wait_time = MIN_WAIT_TIME
+        parse_file(sys.argv[1])
+    console()
 
-main()
+if __name__ == "__main__":
+    main()
